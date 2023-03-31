@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2023-03-31
+### Updated
+- Dependencies
+- Added Flutter analyze action
+
 ## [1.0.0] - 2023-03-31
 ### Added
 - Functional code
