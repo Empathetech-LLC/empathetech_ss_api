@@ -211,7 +211,7 @@ Future<bool> updateMessage(BuildContext context, String title) async {
 
 /// Optionally transfer the signal to a new owner in firestore
 /// This can cost money! [https://firebase.google.com/pricing/]
-void confirmTransfer(BuildContext context, String title, List<String> members) {
+Future<bool> confirmTransfer(BuildContext context, String title, List<String> members) {
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
   List<String> others = new List.from(members);
@@ -275,7 +275,7 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
   }
 
   // Actual pop-up
-  ezDialog(
+  return ezDialog(
     context,
     title: 'Select user',
     content: Column(
@@ -321,8 +321,8 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
-  ezDialog(
+Future<bool> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
+  return ezDialog(
     context,
     title: 'Delete $title?',
     content: ezYesNo(
@@ -350,8 +350,8 @@ void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-void confirmDeparture(BuildContext context, String title, List<String> prefKeys) {
-  ezDialog(
+Future<bool> confirmDeparture(BuildContext context, String title, List<String> prefKeys) {
+  return ezDialog(
     context,
     title: 'Leave $title?',
     content: ezYesNo(
