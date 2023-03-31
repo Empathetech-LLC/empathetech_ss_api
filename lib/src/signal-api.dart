@@ -198,7 +198,7 @@ Future<bool> updateMessage(BuildContext context, String title) async {
               popNLog(context, e.toString());
             }
 
-            popUntilHome(context, success: true);
+            popScreen(context, success: true);
           },
           onDeny: () => popScreen(context),
           axis: Axis.horizontal,
@@ -237,7 +237,6 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
       children.addAll([
         GestureDetector(
           onTap: () async {
-            popUntilHome(context);
             try {
               // Set the owner to "this" user
               await AppUser.db.collection(signalsPath).doc(title).update(
@@ -246,6 +245,7 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
             } catch (e) {
               popNLog(context, e.toString());
             }
+            popScreen(context, success: true);
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -328,7 +328,6 @@ void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
     content: ezYesNo(
       context,
       onConfirm: () async {
-        popUntilHome(context);
         try {
           // Clear local prefs for the signal
           prefKeys.forEach((key) {
@@ -340,6 +339,7 @@ void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
         } catch (e) {
           popNLog(context, e.toString());
         }
+        popScreen(context);
       },
       onDeny: () => popScreen(context),
       axis: Axis.vertical,
@@ -357,7 +357,6 @@ void confirmDeparture(BuildContext context, String title, List<String> prefKeys)
     content: ezYesNo(
       context,
       onConfirm: () async {
-        popUntilHome(context);
         try {
           // Clear local prefs for the signal
           prefKeys.forEach((key) {
@@ -373,6 +372,7 @@ void confirmDeparture(BuildContext context, String title, List<String> prefKeys)
         } catch (e) {
           popNLog(context, e.toString());
         }
+        popScreen(context);
       },
       onDeny: () => popScreen(context),
       axis: Axis.vertical,
