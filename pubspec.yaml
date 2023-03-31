@@ -1,0 +1,12 @@
+name: empathetech_ss_api
+description: Firebase API code for Empathetech's Smoke Signal
+version: 1.0.0
+repository: https://github.com/Empathetech-LLC/empathetech_ss_api
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
