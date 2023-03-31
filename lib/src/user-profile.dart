@@ -72,7 +72,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
         GestureDetector(
           // On long press: diplay the user's profile name
           onLongPress: () => ezDialog(
-            context: context,
+            context,
             content: ezText(
               profile.name,
               style: getTextStyle(dialogTitleStyleKey),

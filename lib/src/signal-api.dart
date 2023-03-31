@@ -155,14 +155,14 @@ Future<void> resetSignal(BuildContext context, String title) async {
 
 /// Optionally update the notification message of the passed signal
 /// This can cost money! [https://firebase.google.com/pricing/]
-void updateMessage(BuildContext context, String title) {
+Future<bool> updateMessage(BuildContext context, String title) async {
   final messageFormKey = GlobalKey<FormState>();
   TextEditingController _messageController = TextEditingController();
 
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
-  ezDialog(
-    context: context,
+  return ezDialog(
+    context,
     title: 'New message...',
     content: Column(
       mainAxisSize: MainAxisSize.min,
@@ -180,7 +180,7 @@ void updateMessage(BuildContext context, String title) {
 
         // Yes/no buttons
         ezYesNo(
-          context: context,
+          context,
           onConfirm: () async {
             // Don't do anything if the message is invalid
             if (!messageFormKey.currentState!.validate()) {
@@ -188,7 +188,6 @@ void updateMessage(BuildContext context, String title) {
               return;
             }
 
-            popUntilHome(context);
             try {
               // Upload the new message
               String message = _messageController.text.trim();
@@ -198,6 +197,8 @@ void updateMessage(BuildContext context, String title) {
             } catch (e) {
               popNLog(context, e.toString());
             }
+
+            popUntilHome(context, success: true);
           },
           onDeny: () => popScreen(context),
           axis: Axis.horizontal,
@@ -275,7 +276,7 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
 
   // Actual pop-up
   ezDialog(
-    context: context,
+    context,
     title: 'Select user',
     content: Column(
       mainAxisSize: MainAxisSize.min,
@@ -310,7 +311,7 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
           },
         ),
         ezCancel(
-          context: context,
+          context,
           onCancel: () => popScreen(context),
         ),
       ],
@@ -322,10 +323,10 @@ void confirmTransfer(BuildContext context, String title, List<String> members) {
 /// This can cost money! [https://firebase.google.com/pricing/]
 void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
   ezDialog(
-    context: context,
+    context,
     title: 'Delete $title?',
     content: ezYesNo(
-      context: context,
+      context,
       onConfirm: () async {
         popUntilHome(context);
         try {
@@ -351,10 +352,10 @@ void confirmDelete(BuildContext context, String title, List<String> prefKeys) {
 /// This can cost money! [https://firebase.google.com/pricing/]
 void confirmDeparture(BuildContext context, String title, List<String> prefKeys) {
   ezDialog(
-    context: context,
+    context,
     title: 'Leave $title?',
     content: ezYesNo(
-      context: context,
+      context,
       onConfirm: () async {
         popUntilHome(context);
         try {

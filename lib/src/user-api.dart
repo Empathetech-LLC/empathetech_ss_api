@@ -76,10 +76,10 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
 /// Logout current user
 void logout(BuildContext context) {
   ezDialog(
-    context: context,
+    context,
     title: 'Logout?',
     content: ezYesNo(
-      context: context,
+      context,
       onConfirm: () async {
         popUntilHome(context);
         await AppUser.auth.signOut();
@@ -154,7 +154,7 @@ void editAvatar(BuildContext context) {
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
   ezDialog(
-    context: context,
+    context,
     needsClose: false,
     content: Column(
       mainAxisSize: MainAxisSize.min,
@@ -181,7 +181,7 @@ void editAvatar(BuildContext context) {
 
         // Submit & cancel buttons
         ezYesNo(
-          context: context,
+          context,
           onConfirm: () async {
             // Close keyboard if open
             AppConfig.focus.primaryFocus?.unfocus();
@@ -222,7 +222,7 @@ void editName(BuildContext context) {
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
   ezDialog(
-    context: context,
+    context,
     title: 'Who are you?',
     needsClose: false,
     content: Column(
@@ -241,7 +241,7 @@ void editName(BuildContext context) {
 
         // Submit & cancel buttons
         ezYesNo(
-          context: context,
+          context,
           onConfirm: () async {
             // Close keyboard if open
             AppConfig.focus.primaryFocus?.unfocus();
