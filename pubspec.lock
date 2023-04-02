@@ -196,11 +196,10 @@ packages:
   empathetech_flutter_ui:
     dependency: "direct main"
     description:
-      name: empathetech_flutter_ui
-      sha256: "5a3a21d6e1333764f7023ffc40f0c9232797c2845ab01fce1fc88ae59aaeede8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.4"
+      path: "../empathetech_flutter_ui"
+      relative: true
+    source: path
+    version: "1.1.5"
   fake_async:
     dependency: transitive
     description:
