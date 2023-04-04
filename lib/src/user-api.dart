@@ -88,6 +88,7 @@ void logout(BuildContext context) {
       axis: Axis.vertical,
       spacer: AppConfig.prefs[dialogSpacingKey],
     ),
+    needsClose: false,
   );
 }
 
