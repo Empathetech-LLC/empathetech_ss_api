@@ -25,7 +25,7 @@ Stream<QuerySnapshot<Object?>> streamSignals(String filter) {
 
 /// Add new signal to the DB
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> addtoDB(BuildContext context, String title, String message, bool isActive,
+Future<bool> addToDB(BuildContext context, String title, String message, bool isActive,
     List<String> requestIDs) async {
   try {
     // Check to see if a document with the same name exists
