@@ -45,15 +45,25 @@ List<UserProfile> buildProfiles(List<DocumentSnapshot> userDocs) {
 
 /// [Widget] to display when there are on users found
 Widget noUserCoin(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Color(AppConfig.prefs[themeColorKey]),
-      shape: BoxShape.circle,
+  return GestureDetector(
+    onLongPress: () => ezDialog(
+      context,
+      content: ezText(
+        'Nobody!',
+        style: getTextStyle(dialogTitleStyleKey),
+        textAlign: TextAlign.center,
+      ),
     ),
-    child: ezIcon(
-      PlatformIcons(context).clear,
-      color: Color(AppConfig.prefs[themeTextColorKey]),
-      size: 35,
+    child: Container(
+      decoration: BoxDecoration(
+        color: Color(AppConfig.prefs[themeColorKey]),
+        shape: BoxShape.circle,
+      ),
+      child: ezIcon(
+        PlatformIcons(context).clear,
+        color: Color(AppConfig.prefs[themeTextColorKey]),
+        size: 35,
+      ),
     ),
   );
 }
@@ -70,7 +80,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
     children.addAll(
       [
         GestureDetector(
-          // On long press: diplay the user's profile name
+          // On long press: display the user's profile name
           onLongPress: () => ezDialog(
             context,
             content: ezText(
