@@ -155,7 +155,8 @@ Future<void> resetSignal(BuildContext context, String title) async {
 
 /// Optionally update the notification message of the passed signal
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> updateMessage(BuildContext context, String title) async {
+/// Returns the new message [String] on success
+Future<dynamic> updateMessage(BuildContext context, String title) async {
   final messageFormKey = GlobalKey<FormState>();
   TextEditingController _messageController = TextEditingController();
 
@@ -189,16 +190,17 @@ Future<bool> updateMessage(BuildContext context, String title) async {
             return;
           }
 
-          popScreen(context, pass: true);
-
           try {
             // Upload the new message
             String message = _messageController.text.trim();
             await AppUser.db.collection(signalsPath).doc(title).update(
               {messagePath: message},
             );
+
+            popScreen(context, pass: message);
           } catch (e) {
             logAlert(context, e.toString());
+            return;
           }
         },
 
@@ -217,7 +219,9 @@ Future<bool> updateMessage(BuildContext context, String title) async {
 
 /// Optionally transfer the signal to a new owner in firestore
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> confirmTransfer(BuildContext context, String title, List<String> members) {
+/// Returns [bool] true on success
+Future<dynamic> confirmTransfer(
+    BuildContext context, String title, List<String> members) {
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
   List<String> others = new List.from(members);
@@ -248,10 +252,10 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
               await AppUser.db.collection(signalsPath).doc(title).update(
                 {ownerPath: profile.id},
               );
+              popScreen(context, pass: true);
             } catch (e) {
               logAlert(context, e.toString());
             }
-            popScreen(context, pass: true);
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -319,7 +323,8 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
+/// Returns [bool] true on success
+Future<dynamic> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
     context,
     title: 'Delete $title?',
@@ -327,8 +332,6 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
       ezYesNo(
         context,
         onConfirm: () async {
-          popScreen(context);
-
           try {
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -337,6 +340,8 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
 
             // Delete the signal from the db
             await AppUser.db.collection(signalsPath).doc(title).delete();
+
+            popScreen(context, pass: true);
           } catch (e) {
             logAlert(context, e.toString());
           }
@@ -352,7 +357,9 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> confirmDeparture(BuildContext context, String title, List<String> prefKeys) {
+/// Returns [bool] true on success
+Future<dynamic> confirmDeparture(
+    BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
     context,
     title: 'Leave $title?',
@@ -360,8 +367,6 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
       ezYesNo(
         context,
         onConfirm: () async {
-          popScreen(context);
-
           try {
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -374,6 +379,8 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
                 membersPath: FieldValue.arrayRemove([AppUser.account.uid])
               },
             );
+
+            popScreen(context, pass: true);
           } catch (e) {
             logAlert(context, e.toString());
           }

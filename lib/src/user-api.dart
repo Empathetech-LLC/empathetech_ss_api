@@ -24,7 +24,7 @@ Future<void> attemptAccountCreation(
     await AppUser.auth.createUserWithEmailAndPassword(email: email, password: password);
 
     // Successful login, return to the home screen
-    popScreen(context);
+    popScreen(context, pass: true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
@@ -53,7 +53,7 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
     await AppUser.auth.signInWithEmailAndPassword(email: email, password: password);
 
     // Successful login, return to the home screen
-    popScreen(context);
+    popScreen(context, pass: true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
@@ -160,7 +160,8 @@ Future<String> getAvatar() async {
 
 /// Update the users avatar
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> editAvatar(BuildContext context) async {
+/// Returns the new URL on success
+Future<dynamic> editAvatar(BuildContext context) async {
   final urlFormKey = GlobalKey<FormState>();
   TextEditingController _urlController = TextEditingController();
 
@@ -168,7 +169,6 @@ Future<bool> editAvatar(BuildContext context) async {
 
   return ezDialog(
     context,
-    needsClose: false,
     content: [
       // URL text field/form
       ezForm(
@@ -202,19 +202,18 @@ Future<bool> editAvatar(BuildContext context) async {
             return;
           }
 
-          // Save text & close dialog
+          // Update firestore and the firebase user config
           String photoURL = _urlController.text.trim();
 
-          // Update firestore and the firebase user config
           try {
             await AppUser.account.updatePhotoURL(photoURL);
             await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
               {avatarURLPath: photoURL},
             );
 
-            popScreen(context, pass: true);
-          } catch (_) {
-            popScreen(context);
+            popScreen(context, pass: photoURL);
+          } catch (e) {
+            logAlert(context, e.toString());
           }
         },
         onDeny: () => popScreen(context),
@@ -224,6 +223,7 @@ Future<bool> editAvatar(BuildContext context) async {
         denyMsg: 'Cancel',
       ),
     ],
+    needsClose: false,
   );
 }
 
@@ -240,7 +240,8 @@ Future<String> getName() async {
 
 /// Update the users display name
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<bool> editName(BuildContext context) async {
+/// Returns the new name on success
+Future<dynamic> editName(BuildContext context) async {
   final nameFormKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
 
@@ -273,19 +274,18 @@ Future<bool> editName(BuildContext context) async {
             return;
           }
 
-          // Save text & close dialog
+          // Update firestore and the firebase user config
           String newName = _nameController.text.trim();
 
-          // Update firestore and the firebase user config
           try {
             await AppUser.account.updateDisplayName(newName);
             await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
               {displayNamePath: newName},
             );
 
-            popScreen(context, pass: true);
-          } catch (_) {
-            popScreen(context);
+            popScreen(context, pass: newName);
+          } catch (e) {
+            logAlert(context, e.toString());
           }
         },
         onDeny: () => popScreen(context),
