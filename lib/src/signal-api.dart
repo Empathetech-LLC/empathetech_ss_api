@@ -189,6 +189,8 @@ Future<bool> updateMessage(BuildContext context, String title) async {
             return;
           }
 
+          popScreen(context, success: true);
+
           try {
             // Upload the new message
             String message = _messageController.text.trim();
@@ -198,8 +200,6 @@ Future<bool> updateMessage(BuildContext context, String title) async {
           } catch (e) {
             logAlert(context, e.toString());
           }
-
-          popScreen(context, success: true);
         },
 
         // No
@@ -313,10 +313,6 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
           }
         },
       ),
-      ezCancel(
-        context,
-        onCancel: () => popScreen(context),
-      ),
     ],
   );
 }
@@ -331,6 +327,8 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
       ezYesNo(
         context,
         onConfirm: () async {
+          popScreen(context);
+
           try {
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -342,7 +340,6 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
           } catch (e) {
             logAlert(context, e.toString());
           }
-          popScreen(context);
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
