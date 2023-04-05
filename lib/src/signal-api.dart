@@ -323,7 +323,6 @@ Future<dynamic> confirmTransfer(
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-/// Returns [bool] true on success
 Future<dynamic> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
     context,
@@ -333,6 +332,9 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
         context,
         onConfirm: () async {
           try {
+            // Pop first to avoid errors
+            popScreen(context);
+
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
               AppConfig.preferences.remove(key);
@@ -340,8 +342,6 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
 
             // Delete the signal from the db
             await AppUser.db.collection(signalsPath).doc(title).delete();
-
-            popScreen(context, pass: true);
           } catch (e) {
             logAlert(context, e.toString());
           }
@@ -357,7 +357,6 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
-/// Returns [bool] true on success
 Future<dynamic> confirmDeparture(
     BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
@@ -368,6 +367,9 @@ Future<dynamic> confirmDeparture(
         context,
         onConfirm: () async {
           try {
+            // Pop first to avoid errors
+            popScreen(context);
+
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
               AppConfig.preferences.remove(key);
@@ -379,8 +381,6 @@ Future<dynamic> confirmDeparture(
                 membersPath: FieldValue.arrayRemove([AppUser.account.uid])
               },
             );
-
-            popScreen(context, pass: true);
           } catch (e) {
             logAlert(context, e.toString());
           }
