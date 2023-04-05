@@ -213,16 +213,15 @@ void editAvatar(BuildContext context) {
 
 /// Update the users display name
 /// This can cost money! [https://firebase.google.com/pricing/]
-void editName(BuildContext context) {
+Future<bool> editName(BuildContext context) async {
   final nameFormKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
 
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
-  ezDialog(
+  return ezDialog(
     context,
     title: 'Who are you?',
-    needsClose: false,
     content: [
       // Name field
       ezForm(
@@ -249,13 +248,18 @@ void editName(BuildContext context) {
 
           // Save text & close dialog
           String newName = _nameController.text.trim();
-          popScreen(context);
 
           // Update firestore and the firebase user config
-          await AppUser.account.updateDisplayName(newName);
-          await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-            {displayNamePath: newName},
-          );
+          try {
+            await AppUser.account.updateDisplayName(newName);
+            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+              {displayNamePath: newName},
+            );
+
+            popScreen(context, success: true);
+          } catch (_) {
+            popScreen(context);
+          }
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
@@ -264,5 +268,6 @@ void editName(BuildContext context) {
         denyMsg: 'Cancel',
       ),
     ],
+    needsClose: false,
   );
 }
