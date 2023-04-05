@@ -28,21 +28,21 @@ Future<void> attemptAccountCreation(
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
-        popNLog(context, 'Email already in use');
+        logAlert(context, 'Email already in use');
         break;
 
       case 'weak-password':
-        popNLog(context, 'The provided password is too weak');
+        logAlert(context, 'The provided password is too weak');
         break;
 
       default:
         String message = 'Firebase error on user creation\n' + e.code;
-        popNLog(context, message);
+        logAlert(context, message);
         break;
     }
   } catch (e) {
     String message = 'Error creating user\n' + e.toString();
-    popNLog(context, message);
+    logAlert(context, message);
   }
 }
 
@@ -57,16 +57,16 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
-        popNLog(context, 'No user found for that email!');
+        logAlert(context, 'No user found for that email!');
         break;
 
       case 'wrong-password':
-        popNLog(context, 'Incorrect password');
+        logAlert(context, 'Incorrect password');
         break;
 
       default:
         String message = 'Error logging in\n' + e.code;
-        popNLog(context, message);
+        logAlert(context, message);
         break;
     }
   }
@@ -187,7 +187,7 @@ void editAvatar(BuildContext context) {
 
           // Don't do anything if the url is invalid
           if (!urlFormKey.currentState!.validate()) {
-            popNLog(context, 'Invalid URL!');
+            logAlert(context, 'Invalid URL!');
             return;
           }
 
@@ -243,7 +243,7 @@ void editName(BuildContext context) {
 
           // Don't do anything if the display name is invalid
           if (!nameFormKey.currentState!.validate()) {
-            popNLog(context, 'Invalid display name!');
+            logAlert(context, 'Invalid display name!');
             return;
           }
 

@@ -32,7 +32,7 @@ Future<bool> addToDB(BuildContext context, String title, String message, bool is
     final check = await AppUser.db.collection(signalsPath).doc(title).get();
 
     if (check.exists) {
-      popNLog(context, 'That name is taken!');
+      logAlert(context, 'That name is taken!');
       return false;
     }
 
@@ -49,7 +49,7 @@ Future<bool> addToDB(BuildContext context, String title, String message, bool is
 
     return true;
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
     return false;
   }
 }
@@ -88,12 +88,12 @@ Future<void> toggleParticipation(BuildContext context, bool joined, String title
             bodyData: message,
           });
         } on FirebaseFunctionsException catch (e) {
-          popNLog(context, e.toString());
+          logAlert(context, e.toString());
         }
       }
     }
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
   }
 }
 
@@ -108,7 +108,7 @@ Future<void> requestMembers(
       },
     );
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
   }
 }
 
@@ -123,7 +123,7 @@ Future<void> acceptInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
   }
 }
 
@@ -137,7 +137,7 @@ Future<void> declineInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
   }
 }
 
@@ -149,7 +149,7 @@ Future<void> resetSignal(BuildContext context, String title) async {
       {activeMembersPath: []},
     );
   } catch (e) {
-    popNLog(context, e.toString());
+    logAlert(context, e.toString());
   }
 }
 
@@ -185,7 +185,7 @@ Future<bool> updateMessage(BuildContext context, String title) async {
         onConfirm: () async {
           // Don't do anything if the message is invalid
           if (!messageFormKey.currentState!.validate()) {
-            popNLog(context, 'Invalid message!');
+            logAlert(context, 'Invalid message!');
             return;
           }
 
@@ -196,7 +196,7 @@ Future<bool> updateMessage(BuildContext context, String title) async {
               {messagePath: message},
             );
           } catch (e) {
-            popNLog(context, e.toString());
+            logAlert(context, e.toString());
           }
 
           popScreen(context, success: true);
@@ -249,7 +249,7 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
                 {ownerPath: profile.id},
               );
             } catch (e) {
-              popNLog(context, e.toString());
+              logAlert(context, e.toString());
             }
             popScreen(context, success: true);
           },
@@ -340,7 +340,7 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
             // Delete the signal from the db
             await AppUser.db.collection(signalsPath).doc(title).delete();
           } catch (e) {
-            popNLog(context, e.toString());
+            logAlert(context, e.toString());
           }
           popScreen(context);
         },
@@ -363,6 +363,8 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
       ezYesNo(
         context,
         onConfirm: () async {
+          popScreen(context);
+
           try {
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -376,9 +378,8 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
               },
             );
           } catch (e) {
-            popNLog(context, e.toString());
+            logAlert(context, e.toString());
           }
-          popScreen(context);
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
