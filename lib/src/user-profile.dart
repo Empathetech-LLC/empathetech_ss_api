@@ -9,7 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-/// Localalized mirror of Firebase [User] information
+/// Localized mirror of Firebase [User] information
 class UserProfile {
   String id;
   String name;
