@@ -99,7 +99,7 @@ Future<String> getToken(String id) async {
   try {
     DocumentSnapshot userSnap = await AppUser.db.collection(usersPath).doc(id).get();
 
-    final data = userSnap.data() as Map<String, dynamic>;
+    final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
 
     return data[fcmTokenPath];
   } catch (e) {
@@ -147,15 +147,26 @@ Stream<QuerySnapshot<Map<String, dynamic>>> streamUsers([List<String>? ids]) {
   }
 }
 
+/// Gets the users avatar url
+/// This can cost money! [https://firebase.google.com/pricing/]
+Future<String> getAvatar() async {
+  DocumentSnapshot userSnap =
+      await AppUser.db.collection(usersPath).doc(AppUser.account.uid).get();
+
+  final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
+
+  return data[avatarURLPath] ?? defaultAvatarURL;
+}
+
 /// Update the users avatar
 /// This can cost money! [https://firebase.google.com/pricing/]
-void editAvatar(BuildContext context) {
+Future<bool> editAvatar(BuildContext context) async {
   final urlFormKey = GlobalKey<FormState>();
   TextEditingController _urlController = TextEditingController();
 
   double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
 
-  ezDialog(
+  return ezDialog(
     context,
     needsClose: false,
     content: [
@@ -193,13 +204,18 @@ void editAvatar(BuildContext context) {
 
           // Save text & close dialog
           String photoURL = _urlController.text.trim();
-          popScreen(context);
 
           // Update firestore and the firebase user config
-          await AppUser.account.updatePhotoURL(photoURL);
-          await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-            {avatarURLPath: photoURL},
-          );
+          try {
+            await AppUser.account.updatePhotoURL(photoURL);
+            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+              {avatarURLPath: photoURL},
+            );
+
+            popScreen(context, success: true);
+          } catch (_) {
+            popScreen(context);
+          }
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
@@ -209,6 +225,17 @@ void editAvatar(BuildContext context) {
       ),
     ],
   );
+}
+
+/// Gets the users display name
+/// This can cost money! [https://firebase.google.com/pricing/]
+Future<String> getName() async {
+  DocumentSnapshot userSnap =
+      await AppUser.db.collection(usersPath).doc(AppUser.account.uid).get();
+
+  final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
+
+  return data[displayNamePath] ?? defaultDisplayName;
 }
 
 /// Update the users display name
