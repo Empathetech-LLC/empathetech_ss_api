@@ -189,7 +189,7 @@ Future<bool> updateMessage(BuildContext context, String title) async {
             return;
           }
 
-          popScreen(context, success: true);
+          popScreen(context, pass: true);
 
           try {
             // Upload the new message
@@ -251,7 +251,7 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
             } catch (e) {
               logAlert(context, e.toString());
             }
-            popScreen(context, success: true);
+            popScreen(context, pass: true);
           },
           child: Row(
             mainAxisSize: MainAxisSize.max,

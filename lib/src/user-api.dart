@@ -212,7 +212,7 @@ Future<bool> editAvatar(BuildContext context) async {
               {avatarURLPath: photoURL},
             );
 
-            popScreen(context, success: true);
+            popScreen(context, pass: true);
           } catch (_) {
             popScreen(context);
           }
@@ -283,7 +283,7 @@ Future<bool> editName(BuildContext context) async {
               {displayNamePath: newName},
             );
 
-            popScreen(context, success: true);
+            popScreen(context, pass: true);
           } catch (_) {
             popScreen(context);
           }
