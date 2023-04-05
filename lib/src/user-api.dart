@@ -77,16 +77,18 @@ void logout(BuildContext context) {
   ezDialog(
     context,
     title: 'Logout?',
-    content: ezYesNo(
-      context,
-      onConfirm: () async {
-        popUntilHome(context);
-        await AppUser.auth.signOut();
-      },
-      onDeny: () => popScreen(context),
-      axis: Axis.vertical,
-      spacer: AppConfig.prefs[dialogSpacingKey],
-    ),
+    content: [
+      ezYesNo(
+        context,
+        onConfirm: () async {
+          popUntilHome(context);
+          await AppUser.auth.signOut();
+        },
+        onDeny: () => popScreen(context),
+        axis: Axis.vertical,
+        spacer: AppConfig.prefs[dialogSpacingKey],
+      ),
+    ],
     needsClose: false,
   );
 }
@@ -156,60 +158,56 @@ void editAvatar(BuildContext context) {
   ezDialog(
     context,
     needsClose: false,
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        // URL text field/form
-        ezForm(
-          key: urlFormKey,
-          controller: _urlController,
-          hintText: 'Enter URL',
-          validator: urlValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
-        Container(height: dialogSpacer),
+    content: [
+      // URL text field/form
+      ezForm(
+        key: urlFormKey,
+        controller: _urlController,
+        hintText: 'Enter URL',
+        validator: urlValidator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+      ),
+      Container(height: dialogSpacer),
 
-        // Explanation for not using image files
-        Text(
-          'Images are expensive to store!\nPaste an image link and that will be used',
-          maxLines: 2,
-          style: getTextStyle(dialogContentStyleKey),
-          textAlign: TextAlign.center,
-        ),
-        Container(height: dialogSpacer),
+      // Explanation for not using image files
+      Text(
+        'Images are expensive to store!\nPaste an image link and that will be used',
+        maxLines: 2,
+        style: getTextStyle(dialogContentStyleKey),
+        textAlign: TextAlign.center,
+      ),
+      Container(height: dialogSpacer),
 
-        // Submit & cancel buttons
-        ezYesNo(
-          context,
-          onConfirm: () async {
-            // Close keyboard if open
-            AppConfig.focus.primaryFocus?.unfocus();
+      // Submit & cancel buttons
+      ezYesNo(
+        context,
+        onConfirm: () async {
+          // Close keyboard if open
+          AppConfig.focus.primaryFocus?.unfocus();
 
-            // Don't do anything if the url is invalid
-            if (!urlFormKey.currentState!.validate()) {
-              popNLog(context, 'Invalid URL!');
-              return;
-            }
+          // Don't do anything if the url is invalid
+          if (!urlFormKey.currentState!.validate()) {
+            popNLog(context, 'Invalid URL!');
+            return;
+          }
 
-            // Save text & close dialog
-            String photoURL = _urlController.text.trim();
-            popScreen(context);
+          // Save text & close dialog
+          String photoURL = _urlController.text.trim();
+          popScreen(context);
 
-            // Update firestore and the firebase user config
-            await AppUser.account.updatePhotoURL(photoURL);
-            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-              {avatarURLPath: photoURL},
-            );
-          },
-          onDeny: () => popScreen(context),
-          axis: Axis.vertical,
-          spacer: dialogSpacer,
-          confirmMsg: 'Submit',
-          denyMsg: 'Cancel',
-        ),
-      ],
-    ),
+          // Update firestore and the firebase user config
+          await AppUser.account.updatePhotoURL(photoURL);
+          await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+            {avatarURLPath: photoURL},
+          );
+        },
+        onDeny: () => popScreen(context),
+        axis: Axis.vertical,
+        spacer: dialogSpacer,
+        confirmMsg: 'Submit',
+        denyMsg: 'Cancel',
+      ),
+    ],
   );
 }
 
@@ -225,50 +223,46 @@ void editName(BuildContext context) {
     context,
     title: 'Who are you?',
     needsClose: false,
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        // Name field
-        ezForm(
-          key: nameFormKey,
-          controller: _nameController,
-          hintText: 'Enter display name',
-          validator: displayNameValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
-        Container(height: dialogSpacer),
+    content: [
+      // Name field
+      ezForm(
+        key: nameFormKey,
+        controller: _nameController,
+        hintText: 'Enter display name',
+        validator: displayNameValidator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+      ),
+      Container(height: dialogSpacer),
 
-        // Submit & cancel buttons
-        ezYesNo(
-          context,
-          onConfirm: () async {
-            // Close keyboard if open
-            AppConfig.focus.primaryFocus?.unfocus();
+      // Submit & cancel buttons
+      ezYesNo(
+        context,
+        onConfirm: () async {
+          // Close keyboard if open
+          AppConfig.focus.primaryFocus?.unfocus();
 
-            // Don't do anything if the display name is invalid
-            if (!nameFormKey.currentState!.validate()) {
-              popNLog(context, 'Invalid display name!');
-              return;
-            }
+          // Don't do anything if the display name is invalid
+          if (!nameFormKey.currentState!.validate()) {
+            popNLog(context, 'Invalid display name!');
+            return;
+          }
 
-            // Save text & close dialog
-            String newName = _nameController.text.trim();
-            popScreen(context);
+          // Save text & close dialog
+          String newName = _nameController.text.trim();
+          popScreen(context);
 
-            // Update firestore and the firebase user config
-            await AppUser.account.updateDisplayName(newName);
-            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-              {displayNamePath: newName},
-            );
-          },
-          onDeny: () => popScreen(context),
-          axis: Axis.vertical,
-          spacer: dialogSpacer,
-          confirmMsg: 'Submit',
-          denyMsg: 'Cancel',
-        ),
-      ],
-    ),
+          // Update firestore and the firebase user config
+          await AppUser.account.updateDisplayName(newName);
+          await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+            {displayNamePath: newName},
+          );
+        },
+        onDeny: () => popScreen(context),
+        axis: Axis.vertical,
+        spacer: dialogSpacer,
+        confirmMsg: 'Submit',
+        denyMsg: 'Cancel',
+      ),
+    ],
   );
 }

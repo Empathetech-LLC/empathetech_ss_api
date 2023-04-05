@@ -48,11 +48,13 @@ Widget noUserCoin(BuildContext context) {
   return GestureDetector(
     onLongPress: () => ezDialog(
       context,
-      content: ezText(
-        'Nobody!',
-        style: getTextStyle(dialogTitleStyleKey),
-        textAlign: TextAlign.center,
-      ),
+      content: [
+        ezText(
+          'Nobody!',
+          style: getTextStyle(dialogTitleStyleKey),
+          textAlign: TextAlign.center,
+        ),
+      ],
     ),
     child: Container(
       decoration: BoxDecoration(
@@ -83,11 +85,13 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
           // On long press: display the user's profile name
           onLongPress: () => ezDialog(
             context,
-            content: ezText(
-              profile.name,
-              style: getTextStyle(dialogTitleStyleKey),
-              textAlign: TextAlign.center,
-            ),
+            content: [
+              ezText(
+                profile.name,
+                style: getTextStyle(dialogTitleStyleKey),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
           child: CircleAvatar(
             foregroundImage: CachedNetworkImageProvider(profile.avatarURL),

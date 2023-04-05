@@ -164,57 +164,53 @@ Future<bool> updateMessage(BuildContext context, String title) async {
   return ezDialog(
     context,
     title: 'New message...',
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        // Text field
-        ezForm(
-          key: messageFormKey,
-          controller: _messageController,
-          hintText: 'Notification',
-          validator: signalMessageValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
-        Container(height: dialogSpacer),
+    content: [
+      // Text field
+      ezForm(
+        key: messageFormKey,
+        controller: _messageController,
+        hintText: 'Notification',
+        validator: signalMessageValidator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+      ),
+      Container(height: dialogSpacer),
 
-        // Yes/no buttons
-        ezYesNo(
-          context,
+      // Yes/no buttons
+      ezYesNo(
+        context,
 
-          // Yes
-          confirmMsg: 'Update',
-          customConfirm: ezIcon(PlatformIcons(context).cloudUpload),
-          onConfirm: () async {
-            // Don't do anything if the message is invalid
-            if (!messageFormKey.currentState!.validate()) {
-              popNLog(context, 'Invalid message!');
-              return;
-            }
+        // Yes
+        confirmMsg: 'Update',
+        customConfirm: ezIcon(PlatformIcons(context).cloudUpload),
+        onConfirm: () async {
+          // Don't do anything if the message is invalid
+          if (!messageFormKey.currentState!.validate()) {
+            popNLog(context, 'Invalid message!');
+            return;
+          }
 
-            try {
-              // Upload the new message
-              String message = _messageController.text.trim();
-              await AppUser.db.collection(signalsPath).doc(title).update(
-                {messagePath: message},
-              );
-            } catch (e) {
-              popNLog(context, e.toString());
-            }
+          try {
+            // Upload the new message
+            String message = _messageController.text.trim();
+            await AppUser.db.collection(signalsPath).doc(title).update(
+              {messagePath: message},
+            );
+          } catch (e) {
+            popNLog(context, e.toString());
+          }
 
-            popScreen(context, success: true);
-          },
+          popScreen(context, success: true);
+        },
 
-          // No
-          denyMsg: 'Cancel',
-          onDeny: () => popScreen(context),
+        // No
+        denyMsg: 'Cancel',
+        onDeny: () => popScreen(context),
 
-          // Styling
-          axis: Axis.vertical,
-          spacer: dialogSpacer,
-        ),
-      ],
-    ),
+        // Styling
+        axis: Axis.vertical,
+        spacer: dialogSpacer,
+      ),
+    ],
     needsClose: false,
   );
 }
@@ -288,44 +284,40 @@ Future<bool> confirmTransfer(BuildContext context, String title, List<String> me
   return ezDialog(
     context,
     title: 'Select user',
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        StreamBuilder<QuerySnapshot>(
-          stream: streamUsers(others),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return PlatformCircularProgressIndicator(
-                  material: (context, platform) => MaterialProgressIndicatorData(
-                    color: Color(AppConfig.prefs[buttonColorKey]),
-                  ),
-                  cupertino: (context, platform) => CupertinoProgressIndicatorData(
-                    color: Color(AppConfig.prefs[buttonColorKey]),
+    content: [
+      StreamBuilder<QuerySnapshot>(
+        stream: streamUsers(others),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return PlatformCircularProgressIndicator(
+                material: (context, platform) => MaterialProgressIndicatorData(
+                  color: Color(AppConfig.prefs[buttonColorKey]),
+                ),
+                cupertino: (context, platform) => CupertinoProgressIndicatorData(
+                  color: Color(AppConfig.prefs[buttonColorKey]),
+                ),
+              );
+            case ConnectionState.done:
+            default:
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    style: getTextStyle(errorStyleKey),
                   ),
                 );
-              case ConnectionState.done:
-              default:
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                      snapshot.error.toString(),
-                      style: getTextStyle(errorStyleKey),
-                    ),
-                  );
-                }
+              }
 
-                return buildSelectors(buildProfiles(snapshot.data!.docs));
-            }
-          },
-        ),
-        ezCancel(
-          context,
-          onCancel: () => popScreen(context),
-        ),
-      ],
-    ),
+              return buildSelectors(buildProfiles(snapshot.data!.docs));
+          }
+        },
+      ),
+      ezCancel(
+        context,
+        onCancel: () => popScreen(context),
+      ),
+    ],
   );
 }
 
@@ -335,26 +327,29 @@ Future<bool> confirmDelete(BuildContext context, String title, List<String> pref
   return ezDialog(
     context,
     title: 'Delete $title?',
-    content: ezYesNo(
-      context,
-      onConfirm: () async {
-        try {
-          // Clear local prefs for the signal
-          prefKeys.forEach((key) {
-            AppConfig.preferences.remove(key);
-          });
+    content: [
+      ezYesNo(
+        context,
+        onConfirm: () async {
+          try {
+            // Clear local prefs for the signal
+            prefKeys.forEach((key) {
+              AppConfig.preferences.remove(key);
+            });
 
-          // Delete the signal from the db
-          await AppUser.db.collection(signalsPath).doc(title).delete();
-        } catch (e) {
-          popNLog(context, e.toString());
-        }
-        popScreen(context);
-      },
-      onDeny: () => popScreen(context),
-      axis: Axis.vertical,
-      spacer: AppConfig.prefs[dialogSpacingKey],
-    ),
+            // Delete the signal from the db
+            await AppUser.db.collection(signalsPath).doc(title).delete();
+          } catch (e) {
+            popNLog(context, e.toString());
+          }
+          popScreen(context);
+        },
+        onDeny: () => popScreen(context),
+        axis: Axis.vertical,
+        spacer: AppConfig.prefs[dialogSpacingKey],
+      ),
+    ],
+    needsClose: false,
   );
 }
 
@@ -364,30 +359,32 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
   return ezDialog(
     context,
     title: 'Leave $title?',
-    content: ezYesNo(
-      context,
-      onConfirm: () async {
-        try {
-          // Clear local prefs for the signal
-          prefKeys.forEach((key) {
-            AppConfig.preferences.remove(key);
-          });
+    content: [
+      ezYesNo(
+        context,
+        onConfirm: () async {
+          try {
+            // Clear local prefs for the signal
+            prefKeys.forEach((key) {
+              AppConfig.preferences.remove(key);
+            });
 
-          // Remove the current user from the list of members
-          await AppUser.db.collection(signalsPath).doc(title).update(
-            {
-              membersPath: FieldValue.arrayRemove([AppUser.account.uid])
-            },
-          );
-        } catch (e) {
-          popNLog(context, e.toString());
-        }
-        popScreen(context);
-      },
-      onDeny: () => popScreen(context),
-      axis: Axis.vertical,
-      spacer: AppConfig.prefs[dialogSpacingKey],
-    ),
+            // Remove the current user from the list of members
+            await AppUser.db.collection(signalsPath).doc(title).update(
+              {
+                membersPath: FieldValue.arrayRemove([AppUser.account.uid])
+              },
+            );
+          } catch (e) {
+            popNLog(context, e.toString());
+          }
+          popScreen(context);
+        },
+        onDeny: () => popScreen(context),
+        axis: Axis.vertical,
+        spacer: AppConfig.prefs[dialogSpacingKey],
+      ),
+    ],
     needsClose: false,
   );
 }
