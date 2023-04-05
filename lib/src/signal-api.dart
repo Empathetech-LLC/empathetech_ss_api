@@ -181,6 +181,10 @@ Future<bool> updateMessage(BuildContext context, String title) async {
         // Yes/no buttons
         ezYesNo(
           context,
+
+          // Yes
+          confirmMsg: 'Update',
+          customConfirm: ezIcon(PlatformIcons(context).cloudUpload),
           onConfirm: () async {
             // Don't do anything if the message is invalid
             if (!messageFormKey.currentState!.validate()) {
@@ -200,12 +204,18 @@ Future<bool> updateMessage(BuildContext context, String title) async {
 
             popScreen(context, success: true);
           },
+
+          // No
+          denyMsg: 'Cancel',
           onDeny: () => popScreen(context),
-          axis: Axis.horizontal,
+
+          // Styling
+          axis: Axis.vertical,
           spacer: dialogSpacer,
         ),
       ],
     ),
+    needsClose: false,
   );
 }
 
@@ -378,5 +388,6 @@ Future<bool> confirmDeparture(BuildContext context, String title, List<String> p
       axis: Axis.vertical,
       spacer: AppConfig.prefs[dialogSpacingKey],
     ),
+    needsClose: false,
   );
 }
