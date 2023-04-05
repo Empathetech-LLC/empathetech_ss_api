@@ -28,8 +28,7 @@ Future<void> attemptAccountCreation(
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
-        popNLog(context, 'Email already in use, attempting login');
-        await attemptLogin(context, email, password);
+        popNLog(context, 'Email already in use');
         break;
 
       case 'weak-password':
