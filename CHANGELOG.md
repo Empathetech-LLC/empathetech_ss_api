@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.0.1] - 2023-03-31
+### Added
+- Donations section to README
+
 ### Updated
 - Dependencies
 - Added Flutter analyze action
