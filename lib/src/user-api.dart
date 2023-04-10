@@ -161,7 +161,7 @@ Future<String> getAvatar() async {
 /// Update the users avatar
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new URL on success
-Future<dynamic> editAvatar(BuildContext context) async {
+Future<dynamic> editAvatar(BuildContext context) {
   final urlFormKey = GlobalKey<FormState>();
   TextEditingController _urlController = TextEditingController();
 
@@ -241,7 +241,7 @@ Future<String> getName() async {
 /// Update the users display name
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new name on success
-Future<dynamic> editName(BuildContext context) async {
+Future<dynamic> editName(BuildContext context) {
   final nameFormKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
 

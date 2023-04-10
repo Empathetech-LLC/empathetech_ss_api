@@ -156,7 +156,7 @@ Future<void> resetSignal(BuildContext context, String title) async {
 /// Optionally update the notification message of the passed signal
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new message [String] on success
-Future<dynamic> updateMessage(BuildContext context, String title) async {
+Future<dynamic> updateMessage(BuildContext context, String title) {
   final messageFormKey = GlobalKey<FormState>();
   TextEditingController _messageController = TextEditingController();
 
