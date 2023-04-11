@@ -24,7 +24,7 @@ Future<void> attemptAccountCreation(
     await AppUser.auth.createUserWithEmailAndPassword(email: email, password: password);
 
     // Successful login, return to the home screen
-    popScreen(context, pass: true);
+    popScreen(context: context, pass: true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
@@ -53,7 +53,7 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
     await AppUser.auth.signInWithEmailAndPassword(email: email, password: password);
 
     // Successful login, return to the home screen
-    popScreen(context, pass: true);
+    popScreen(context: context, pass: true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
@@ -75,16 +75,16 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
 /// Logout current user
 void logout(BuildContext context) {
   ezDialog(
-    context,
+    context: context,
     title: 'Logout?',
     content: [
       ezYesNo(
-        context,
+        context: context,
         onConfirm: () async {
           popUntilHome(context);
           await AppUser.auth.signOut();
         },
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
         axis: Axis.vertical,
         spacer: EzConfig.prefs[dialogSpacingKey],
       ),
@@ -168,7 +168,7 @@ Future<dynamic> editAvatar(BuildContext context) {
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
-    context,
+    context: context,
     content: [
       // URL text field/form
       ezForm(
@@ -191,7 +191,7 @@ Future<dynamic> editAvatar(BuildContext context) {
 
       // Submit & cancel buttons
       ezYesNo(
-        context,
+        context: context,
         onConfirm: () async {
           // Close keyboard if open
           EzConfig.focus.primaryFocus?.unfocus();
@@ -211,12 +211,12 @@ Future<dynamic> editAvatar(BuildContext context) {
               {avatarURLPath: photoURL},
             );
 
-            popScreen(context, pass: photoURL);
+            popScreen(context: context, pass: photoURL);
           } catch (e) {
             logAlert(context, e.toString());
           }
         },
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
         axis: Axis.vertical,
         spacer: dialogSpacer,
         confirmMsg: 'Submit',
@@ -248,7 +248,7 @@ Future<dynamic> editName(BuildContext context) {
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
-    context,
+    context: context,
     title: 'Who are you?',
     content: [
       // Name field
@@ -263,7 +263,7 @@ Future<dynamic> editName(BuildContext context) {
 
       // Submit & cancel buttons
       ezYesNo(
-        context,
+        context: context,
         onConfirm: () async {
           // Close keyboard if open
           EzConfig.focus.primaryFocus?.unfocus();
@@ -283,12 +283,12 @@ Future<dynamic> editName(BuildContext context) {
               {displayNamePath: newName},
             );
 
-            popScreen(context, pass: newName);
+            popScreen(context: context, pass: newName);
           } catch (e) {
             logAlert(context, e.toString());
           }
         },
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
         axis: Axis.vertical,
         spacer: dialogSpacer,
         confirmMsg: 'Submit',

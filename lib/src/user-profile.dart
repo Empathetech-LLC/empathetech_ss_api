@@ -47,7 +47,7 @@ List<UserProfile> buildProfiles(List<DocumentSnapshot> userDocs) {
 Widget noUserCoin(BuildContext context) {
   return GestureDetector(
     onLongPress: () => ezDialog(
-      context,
+      context: context,
       content: [
         ezText(
           'Nobody!',
@@ -84,7 +84,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
         GestureDetector(
           // On long press: display the user's profile name
           onLongPress: () => ezDialog(
-            context,
+            context: context,
             content: [
               ezText(
                 profile.name,

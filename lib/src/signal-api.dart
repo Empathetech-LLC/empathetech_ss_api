@@ -163,7 +163,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
-    context,
+    context: context,
     title: 'New message...',
     content: [
       // Text field
@@ -178,7 +178,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
       // Yes/no buttons
       ezYesNo(
-        context,
+        context: context,
 
         // Yes
         confirmMsg: 'Update',
@@ -197,7 +197,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
               {messagePath: message},
             );
 
-            popScreen(context, pass: message);
+            popScreen(context: context, pass: message);
           } catch (e) {
             logAlert(context, e.toString());
             return;
@@ -206,7 +206,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
         // No
         denyMsg: 'Cancel',
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
 
         // Styling
         axis: Axis.vertical,
@@ -252,7 +252,7 @@ Future<dynamic> confirmTransfer(
               await AppUser.db.collection(signalsPath).doc(title).update(
                 {ownerPath: profile.id},
               );
-              popScreen(context, pass: true);
+              popScreen(context: context, pass: true);
             } catch (e) {
               logAlert(context, e.toString());
             }
@@ -286,7 +286,7 @@ Future<dynamic> confirmTransfer(
 
   // Actual pop-up
   return ezDialog(
-    context,
+    context: context,
     title: 'Select user',
     content: [
       StreamBuilder<QuerySnapshot>(
@@ -325,15 +325,15 @@ Future<dynamic> confirmTransfer(
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<dynamic> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
-    context,
+    context: context,
     title: 'Delete $title?',
     content: [
       ezYesNo(
-        context,
+        context: context,
         onConfirm: () async {
           try {
             // Pop first to avoid errors
-            popScreen(context);
+            popScreen(context: context);
 
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -346,7 +346,7 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
             logAlert(context, e.toString());
           }
         },
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
         axis: Axis.vertical,
         spacer: EzConfig.prefs[dialogSpacingKey],
       ),
@@ -360,15 +360,15 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
 Future<dynamic> confirmDeparture(
     BuildContext context, String title, List<String> prefKeys) {
   return ezDialog(
-    context,
+    context: context,
     title: 'Leave $title?',
     content: [
       ezYesNo(
-        context,
+        context: context,
         onConfirm: () async {
           try {
             // Pop first to avoid errors
-            popScreen(context);
+            popScreen(context: context);
 
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
@@ -385,7 +385,7 @@ Future<dynamic> confirmDeparture(
             logAlert(context, e.toString());
           }
         },
-        onDeny: () => popScreen(context),
+        onDeny: () => popScreen(context: context),
         axis: Axis.vertical,
         spacer: EzConfig.prefs[dialogSpacingKey],
       ),
