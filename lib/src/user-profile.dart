@@ -58,12 +58,12 @@ Widget noUserCoin(BuildContext context) {
     ),
     child: Container(
       decoration: BoxDecoration(
-        color: Color(AppConfig.prefs[themeColorKey]),
+        color: Color(EzConfig.prefs[themeColorKey]),
         shape: BoxShape.circle,
       ),
       child: ezIcon(
         PlatformIcons(context).clear,
-        color: Color(AppConfig.prefs[themeTextColorKey]),
+        color: Color(EzConfig.prefs[themeTextColorKey]),
         size: 35,
       ),
     ),
@@ -99,7 +99,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
             maxRadius: 35,
           ),
         ),
-        Container(width: AppConfig.prefs[paddingKey]),
+        Container(width: EzConfig.prefs[paddingKey]),
       ],
     );
   });
@@ -115,7 +115,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
 
 /// Displays a list of [UserProfile] pictures alongside their display names
 Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
-  double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
+  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   // Return clear icon on empty list
   if (profiles.isEmpty)

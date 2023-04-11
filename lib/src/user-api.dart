@@ -86,7 +86,7 @@ void logout(BuildContext context) {
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
-        spacer: AppConfig.prefs[dialogSpacingKey],
+        spacer: EzConfig.prefs[dialogSpacingKey],
       ),
     ],
     needsClose: false,
@@ -165,7 +165,7 @@ Future<dynamic> editAvatar(BuildContext context) {
   final urlFormKey = GlobalKey<FormState>();
   TextEditingController _urlController = TextEditingController();
 
-  double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
+  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
     context,
@@ -194,7 +194,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         context,
         onConfirm: () async {
           // Close keyboard if open
-          AppConfig.focus.primaryFocus?.unfocus();
+          EzConfig.focus.primaryFocus?.unfocus();
 
           // Don't do anything if the url is invalid
           if (!urlFormKey.currentState!.validate()) {
@@ -245,7 +245,7 @@ Future<dynamic> editName(BuildContext context) {
   final nameFormKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
 
-  double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
+  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
     context,
@@ -266,7 +266,7 @@ Future<dynamic> editName(BuildContext context) {
         context,
         onConfirm: () async {
           // Close keyboard if open
-          AppConfig.focus.primaryFocus?.unfocus();
+          EzConfig.focus.primaryFocus?.unfocus();
 
           // Don't do anything if the display name is invalid
           if (!nameFormKey.currentState!.validate()) {

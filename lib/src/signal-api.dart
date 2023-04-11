@@ -160,7 +160,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
   final messageFormKey = GlobalKey<FormState>();
   TextEditingController _messageController = TextEditingController();
 
-  double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
+  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   return ezDialog(
     context,
@@ -222,7 +222,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 /// Returns [bool] true on success
 Future<dynamic> confirmTransfer(
     BuildContext context, String title, List<String> members) {
-  double dialogSpacer = AppConfig.prefs[dialogSpacingKey];
+  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
   List<String> others = new List.from(members);
   others.remove(AppUser.account.uid);
@@ -296,10 +296,10 @@ Future<dynamic> confirmTransfer(
             case ConnectionState.waiting:
               return PlatformCircularProgressIndicator(
                 material: (context, platform) => MaterialProgressIndicatorData(
-                  color: Color(AppConfig.prefs[buttonColorKey]),
+                  color: Color(EzConfig.prefs[buttonColorKey]),
                 ),
                 cupertino: (context, platform) => CupertinoProgressIndicatorData(
-                  color: Color(AppConfig.prefs[buttonColorKey]),
+                  color: Color(EzConfig.prefs[buttonColorKey]),
                 ),
               );
             case ConnectionState.done:
@@ -337,7 +337,7 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
 
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
-              AppConfig.preferences.remove(key);
+              EzConfig.preferences.remove(key);
             });
 
             // Delete the signal from the db
@@ -348,7 +348,7 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
-        spacer: AppConfig.prefs[dialogSpacingKey],
+        spacer: EzConfig.prefs[dialogSpacingKey],
       ),
     ],
     needsClose: false,
@@ -372,7 +372,7 @@ Future<dynamic> confirmDeparture(
 
             // Clear local prefs for the signal
             prefKeys.forEach((key) {
-              AppConfig.preferences.remove(key);
+              EzConfig.preferences.remove(key);
             });
 
             // Remove the current user from the list of members
@@ -387,7 +387,7 @@ Future<dynamic> confirmDeparture(
         },
         onDeny: () => popScreen(context),
         axis: Axis.vertical,
-        spacer: AppConfig.prefs[dialogSpacingKey],
+        spacer: EzConfig.prefs[dialogSpacingKey],
       ),
     ],
     needsClose: false,
