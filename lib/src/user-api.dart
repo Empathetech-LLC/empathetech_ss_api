@@ -184,7 +184,7 @@ Future<dynamic> editAvatar(BuildContext context) {
       Text(
         'Images are expensive to store!\nPaste an image link and that will be used',
         maxLines: 2,
-        style: getTextStyle(dialogContentStyleKey),
+        style: buildTextStyle(style: dialogContentStyleKey),
         textAlign: TextAlign.center,
       ),
       Container(height: dialogSpacer),

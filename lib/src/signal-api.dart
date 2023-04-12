@@ -271,7 +271,7 @@ Future<dynamic> confirmTransfer(
               // Display name
               ezText(
                 profile.name,
-                style: getTextStyle(dialogTitleStyleKey),
+                style: buildTextStyle(style: dialogTitleStyleKey),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -308,7 +308,7 @@ Future<dynamic> confirmTransfer(
                 return Center(
                   child: Text(
                     snapshot.error.toString(),
-                    style: getTextStyle(errorStyleKey),
+                    style: buildTextStyle(style: errorStyleKey),
                   ),
                 );
               }

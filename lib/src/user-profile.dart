@@ -51,7 +51,7 @@ Widget noUserCoin(BuildContext context) {
       content: [
         ezText(
           'Nobody!',
-          style: getTextStyle(dialogTitleStyleKey),
+          style: buildTextStyle(style: dialogTitleStyleKey),
           textAlign: TextAlign.center,
         ),
       ],
@@ -88,7 +88,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
             content: [
               ezText(
                 profile.name,
-                style: getTextStyle(dialogTitleStyleKey),
+                style: buildTextStyle(style: dialogTitleStyleKey),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -147,7 +147,7 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
           // Display name
           ezText(
             profile.name,
-            style: getTextStyle(dialogTitleStyleKey),
+            style: buildTextStyle(style: dialogTitleStyleKey),
             textAlign: TextAlign.start,
           ),
         ],
