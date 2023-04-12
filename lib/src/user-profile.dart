@@ -61,7 +61,7 @@ Widget noUserCoin(BuildContext context) {
         color: Color(EzConfig.prefs[themeColorKey]),
         shape: BoxShape.circle,
       ),
-      child: ezIcon(
+      child: EzIcon(
         PlatformIcons(context).clear,
         color: Color(EzConfig.prefs[themeTextColorKey]),
         size: 35,

@@ -182,7 +182,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
         // Yes
         confirmMsg: 'Update',
-        customConfirm: ezIcon(PlatformIcons(context).cloudUpload),
+        customConfirm: EzIcon(PlatformIcons(context).cloudUpload),
         onConfirm: () async {
           // Don't do anything if the message is invalid
           if (!messageFormKey.currentState!.validate()) {
