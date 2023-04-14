@@ -171,15 +171,14 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
       ),
       contents: [
         // Text field
-        Form(
+        EzFormField(
           key: messageFormKey,
-          child: EzFormField(
-            controller: _messageController,
-            hintText: 'Notification',
-            validator: signalMessageValidator,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
+          controller: _messageController,
+          hintText: 'Notification',
+          validator: signalMessageValidator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
+
         Container(height: dialogSpacer),
 
         // Yes/no buttons

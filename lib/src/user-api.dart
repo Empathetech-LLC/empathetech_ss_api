@@ -177,14 +177,12 @@ Future<dynamic> editAvatar(BuildContext context) {
     dialog: EzDialog(
       contents: [
         // URL text field/form
-        Form(
+        EzFormField(
           key: urlFormKey,
-          child: EzFormField(
-            controller: _urlController,
-            hintText: 'Enter URL',
-            validator: urlValidator,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
+          controller: _urlController,
+          hintText: 'Enter URL',
+          validator: urlValidator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
 
         Container(height: dialogSpacer),
@@ -267,14 +265,12 @@ Future<dynamic> editName(BuildContext context) {
       contents: [
         // Name field
 
-        Form(
+        EzFormField(
           key: nameFormKey,
-          child: EzFormField(
-            controller: _nameController,
-            hintText: 'Enter display name',
-            validator: displayNameValidator,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
+          controller: _nameController,
+          hintText: 'Enter display name',
+          validator: displayNameValidator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
         Container(height: dialogSpacer),
 
