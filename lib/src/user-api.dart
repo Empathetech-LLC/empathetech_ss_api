@@ -73,23 +73,28 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
 }
 
 /// Logout current user
-void logout(BuildContext context) {
-  ezDialog(
+Future<dynamic> logout(BuildContext context) {
+  return openDialog(
     context: context,
-    title: 'Logout?',
-    content: [
-      ezYesNo(
-        context: context,
-        onConfirm: () async {
-          popUntilHome(context);
-          await AppUser.auth.signOut();
-        },
-        onDeny: () => popScreen(context: context),
-        axis: Axis.vertical,
-        spacer: EzConfig.prefs[dialogSpacingKey],
+    dialog: EzDialog(
+      title: Text(
+        'Logout?',
+        style: buildTextStyle(style: dialogTitleStyleKey),
       ),
-    ],
-    needsClose: false,
+      contents: [
+        ezYesNo(
+          context: context,
+          onConfirm: () async {
+            popUntilHome(context);
+            await AppUser.auth.signOut();
+          },
+          onDeny: () => popScreen(context: context),
+          axis: Axis.vertical,
+          spacer: EzConfig.prefs[dialogSpacingKey],
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }
 
@@ -167,63 +172,68 @@ Future<dynamic> editAvatar(BuildContext context) {
 
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
-  return ezDialog(
+  return openDialog(
     context: context,
-    content: [
-      // URL text field/form
-      ezForm(
-        key: urlFormKey,
-        controller: _urlController,
-        hintText: 'Enter URL',
-        validator: urlValidator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-      ),
-      Container(height: dialogSpacer),
+    dialog: EzDialog(
+      contents: [
+        // URL text field/form
+        Form(
+          key: urlFormKey,
+          child: EzFormField(
+            controller: _urlController,
+            hintText: 'Enter URL',
+            validator: urlValidator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+        ),
 
-      // Explanation for not using image files
-      Text(
-        'Images are expensive to store!\nPaste an image link and that will be used',
-        maxLines: 2,
-        style: buildTextStyle(style: dialogContentStyleKey),
-        textAlign: TextAlign.center,
-      ),
-      Container(height: dialogSpacer),
+        Container(height: dialogSpacer),
 
-      // Submit & cancel buttons
-      ezYesNo(
-        context: context,
-        onConfirm: () async {
-          // Close keyboard if open
-          closeFocus();
+        // Explanation for not using image files
+        Text(
+          'Images are expensive to store!\nPaste an image link and that will be used',
+          maxLines: 2,
+          style: buildTextStyle(style: dialogContentStyleKey),
+          textAlign: TextAlign.center,
+        ),
+        Container(height: dialogSpacer),
 
-          // Don't do anything if the url is invalid
-          if (!urlFormKey.currentState!.validate()) {
-            logAlert(context, 'Invalid URL!');
-            return;
-          }
+        // Submit & cancel buttons
+        ezYesNo(
+          context: context,
+          onConfirm: () async {
+            // Close keyboard if open
+            closeFocus();
 
-          // Update firestore and the firebase user config
-          String photoURL = _urlController.text.trim();
+            // Don't do anything if the url is invalid
+            if (!urlFormKey.currentState!.validate()) {
+              logAlert(context, 'Invalid URL!');
+              return;
+            }
 
-          try {
-            await AppUser.account.updatePhotoURL(photoURL);
-            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-              {avatarURLPath: photoURL},
-            );
+            // Update firestore and the firebase user config
+            String photoURL = _urlController.text.trim();
 
-            popScreen(context: context, pass: photoURL);
-          } catch (e) {
-            logAlert(context, e.toString());
-          }
-        },
-        onDeny: () => popScreen(context: context),
-        axis: Axis.vertical,
-        spacer: dialogSpacer,
-        confirmMsg: 'Submit',
-        denyMsg: 'Cancel',
-      ),
-    ],
-    needsClose: false,
+            try {
+              await AppUser.account.updatePhotoURL(photoURL);
+              await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+                {avatarURLPath: photoURL},
+              );
+
+              popScreen(context: context, pass: photoURL);
+            } catch (e) {
+              logAlert(context, e.toString());
+            }
+          },
+          onDeny: () => popScreen(context: context),
+          axis: Axis.vertical,
+          spacer: dialogSpacer,
+          confirmMsg: 'Submit',
+          denyMsg: 'Cancel',
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }
 
@@ -247,54 +257,62 @@ Future<dynamic> editName(BuildContext context) {
 
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
-  return ezDialog(
+  return openDialog(
     context: context,
-    title: 'Who are you?',
-    content: [
-      // Name field
-      ezForm(
-        key: nameFormKey,
-        controller: _nameController,
-        hintText: 'Enter display name',
-        validator: displayNameValidator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+    dialog: EzDialog(
+      title: Text(
+        'Who are you?',
+        style: buildTextStyle(style: dialogTitleStyleKey),
       ),
-      Container(height: dialogSpacer),
+      contents: [
+        // Name field
 
-      // Submit & cancel buttons
-      ezYesNo(
-        context: context,
-        onConfirm: () async {
-          // Close keyboard if open
-          closeFocus();
+        Form(
+          key: nameFormKey,
+          child: EzFormField(
+            controller: _nameController,
+            hintText: 'Enter display name',
+            validator: displayNameValidator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+        ),
+        Container(height: dialogSpacer),
 
-          // Don't do anything if the display name is invalid
-          if (!nameFormKey.currentState!.validate()) {
-            logAlert(context, 'Invalid display name!');
-            return;
-          }
+        // Submit & cancel buttons
+        ezYesNo(
+          context: context,
+          onConfirm: () async {
+            // Close keyboard if open
+            closeFocus();
 
-          // Update firestore and the firebase user config
-          String newName = _nameController.text.trim();
+            // Don't do anything if the display name is invalid
+            if (!nameFormKey.currentState!.validate()) {
+              logAlert(context, 'Invalid display name!');
+              return;
+            }
 
-          try {
-            await AppUser.account.updateDisplayName(newName);
-            await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
-              {displayNamePath: newName},
-            );
+            // Update firestore and the firebase user config
+            String newName = _nameController.text.trim();
 
-            popScreen(context: context, pass: newName);
-          } catch (e) {
-            logAlert(context, e.toString());
-          }
-        },
-        onDeny: () => popScreen(context: context),
-        axis: Axis.vertical,
-        spacer: dialogSpacer,
-        confirmMsg: 'Submit',
-        denyMsg: 'Cancel',
-      ),
-    ],
-    needsClose: false,
+            try {
+              await AppUser.account.updateDisplayName(newName);
+              await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+                {displayNamePath: newName},
+              );
+
+              popScreen(context: context, pass: newName);
+            } catch (e) {
+              logAlert(context, e.toString());
+            }
+          },
+          onDeny: () => popScreen(context: context),
+          axis: Axis.vertical,
+          spacer: dialogSpacer,
+          confirmMsg: 'Submit',
+          denyMsg: 'Cancel',
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }

@@ -162,58 +162,65 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
-  return ezDialog(
+  return openDialog(
     context: context,
-    title: 'New message...',
-    content: [
-      // Text field
-      ezForm(
-        key: messageFormKey,
-        controller: _messageController,
-        hintText: 'Notification',
-        validator: signalMessageValidator,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+    dialog: EzDialog(
+      title: Text(
+        'New message...',
+        style: buildTextStyle(style: dialogTitleStyleKey),
       ),
-      Container(height: dialogSpacer),
+      contents: [
+        // Text field
+        Form(
+          key: messageFormKey,
+          child: EzFormField(
+            controller: _messageController,
+            hintText: 'Notification',
+            validator: signalMessageValidator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+        ),
+        Container(height: dialogSpacer),
 
-      // Yes/no buttons
-      ezYesNo(
-        context: context,
+        // Yes/no buttons
+        ezYesNo(
+          context: context,
 
-        // Yes
-        confirmMsg: 'Update',
-        customConfirm: EzIcon(PlatformIcons(context).cloudUpload),
-        onConfirm: () async {
-          // Don't do anything if the message is invalid
-          if (!messageFormKey.currentState!.validate()) {
-            logAlert(context, 'Invalid message!');
-            return;
-          }
+          // Yes
+          confirmMsg: 'Update',
+          customConfirm: EzIcon(PlatformIcons(context).cloudUpload),
+          onConfirm: () async {
+            // Don't do anything if the message is invalid
+            if (!messageFormKey.currentState!.validate()) {
+              logAlert(context, 'Invalid message!');
+              return;
+            }
 
-          try {
-            // Upload the new message
-            String message = _messageController.text.trim();
-            await AppUser.db.collection(signalsPath).doc(title).update(
-              {messagePath: message},
-            );
+            try {
+              // Upload the new message
+              String message = _messageController.text.trim();
+              await AppUser.db.collection(signalsPath).doc(title).update(
+                {messagePath: message},
+              );
 
-            popScreen(context: context, pass: message);
-          } catch (e) {
-            logAlert(context, e.toString());
-            return;
-          }
-        },
+              popScreen(context: context, pass: message);
+            } catch (e) {
+              logAlert(context, e.toString());
+              return;
+            }
+          },
 
-        // No
-        denyMsg: 'Cancel',
-        onDeny: () => popScreen(context: context),
+          // No
+          denyMsg: 'Cancel',
+          onDeny: () => popScreen(context: context),
 
-        // Styling
-        axis: Axis.vertical,
-        spacer: dialogSpacer,
-      ),
-    ],
-    needsClose: false,
+          // Styling
+          axis: Axis.vertical,
+          spacer: dialogSpacer,
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }
 
@@ -285,73 +292,83 @@ Future<dynamic> confirmTransfer(
   }
 
   // Actual pop-up
-  return ezDialog(
+  return openDialog(
     context: context,
-    title: 'Select user',
-    content: [
-      StreamBuilder<QuerySnapshot>(
-        stream: streamUsers(others),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return PlatformCircularProgressIndicator(
-                material: (context, platform) => MaterialProgressIndicatorData(
-                  color: Color(EzConfig.prefs[buttonColorKey]),
-                ),
-                cupertino: (context, platform) => CupertinoProgressIndicatorData(
-                  color: Color(EzConfig.prefs[buttonColorKey]),
-                ),
-              );
-            case ConnectionState.done:
-            default:
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    snapshot.error.toString(),
-                    style: buildTextStyle(style: errorStyleKey),
+    dialog: EzDialog(
+      title: Text(
+        'Select user',
+        style: buildTextStyle(style: dialogTitleStyleKey),
+      ),
+      contents: [
+        StreamBuilder<QuerySnapshot>(
+          stream: streamUsers(others),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return PlatformCircularProgressIndicator(
+                  material: (context, platform) => MaterialProgressIndicatorData(
+                    color: Color(EzConfig.prefs[buttonColorKey]),
+                  ),
+                  cupertino: (context, platform) => CupertinoProgressIndicatorData(
+                    color: Color(EzConfig.prefs[buttonColorKey]),
                   ),
                 );
-              }
+              case ConnectionState.done:
+              default:
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      snapshot.error.toString(),
+                      style: buildTextStyle(style: errorStyleKey),
+                    ),
+                  );
+                }
 
-              return buildSelectors(buildProfiles(snapshot.data!.docs));
-          }
-        },
-      ),
-    ],
+                return buildSelectors(buildProfiles(snapshot.data!.docs));
+            }
+          },
+        ),
+      ],
+    ),
   );
 }
 
 /// Optionally delete the signal in firestore and clear local prefs
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<dynamic> confirmDelete(BuildContext context, String title, List<String> prefKeys) {
-  return ezDialog(
+  return openDialog(
     context: context,
-    title: 'Delete $title?',
-    content: [
-      ezYesNo(
-        context: context,
-        onConfirm: () async {
-          try {
-            // Pop first to avoid errors
-            popScreen(context: context);
-
-            // Clear local prefs for the signal
-            prefKeys.forEach((key) {
-              EzConfig.preferences.remove(key);
-            });
-
-            // Delete the signal from the db
-            await AppUser.db.collection(signalsPath).doc(title).delete();
-          } catch (e) {
-            logAlert(context, e.toString());
-          }
-        },
-        onDeny: () => popScreen(context: context),
-        axis: Axis.vertical,
-        spacer: EzConfig.prefs[dialogSpacingKey],
+    dialog: EzDialog(
+      title: Text(
+        'Delete $title?',
+        style: buildTextStyle(style: dialogTitleStyleKey),
       ),
-    ],
-    needsClose: false,
+      contents: [
+        ezYesNo(
+          context: context,
+          onConfirm: () async {
+            try {
+              // Pop first to avoid errors
+              popScreen(context: context);
+
+              // Clear local prefs for the signal
+              prefKeys.forEach((key) {
+                EzConfig.preferences.remove(key);
+              });
+
+              // Delete the signal from the db
+              await AppUser.db.collection(signalsPath).doc(title).delete();
+            } catch (e) {
+              logAlert(context, e.toString());
+            }
+          },
+          onDeny: () => popScreen(context: context),
+          axis: Axis.vertical,
+          spacer: EzConfig.prefs[dialogSpacingKey],
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }
 
@@ -359,37 +376,42 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<dynamic> confirmDeparture(
     BuildContext context, String title, List<String> prefKeys) {
-  return ezDialog(
+  return openDialog(
     context: context,
-    title: 'Leave $title?',
-    content: [
-      ezYesNo(
-        context: context,
-        onConfirm: () async {
-          try {
-            // Pop first to avoid errors
-            popScreen(context: context);
-
-            // Clear local prefs for the signal
-            prefKeys.forEach((key) {
-              EzConfig.preferences.remove(key);
-            });
-
-            // Remove the current user from the list of members
-            await AppUser.db.collection(signalsPath).doc(title).update(
-              {
-                membersPath: FieldValue.arrayRemove([AppUser.account.uid])
-              },
-            );
-          } catch (e) {
-            logAlert(context, e.toString());
-          }
-        },
-        onDeny: () => popScreen(context: context),
-        axis: Axis.vertical,
-        spacer: EzConfig.prefs[dialogSpacingKey],
+    dialog: EzDialog(
+      title: Text(
+        'Leave $title?',
+        style: buildTextStyle(style: dialogTitleStyleKey),
       ),
-    ],
-    needsClose: false,
+      contents: [
+        ezYesNo(
+          context: context,
+          onConfirm: () async {
+            try {
+              // Pop first to avoid errors
+              popScreen(context: context);
+
+              // Clear local prefs for the signal
+              prefKeys.forEach((key) {
+                EzConfig.preferences.remove(key);
+              });
+
+              // Remove the current user from the list of members
+              await AppUser.db.collection(signalsPath).doc(title).update(
+                {
+                  membersPath: FieldValue.arrayRemove([AppUser.account.uid])
+                },
+              );
+            } catch (e) {
+              logAlert(context, e.toString());
+            }
+          },
+          onDeny: () => popScreen(context: context),
+          axis: Axis.vertical,
+          spacer: EzConfig.prefs[dialogSpacingKey],
+        ),
+      ],
+      needsClose: false,
+    ),
   );
 }

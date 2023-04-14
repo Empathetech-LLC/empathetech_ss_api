@@ -46,15 +46,17 @@ List<UserProfile> buildProfiles(List<DocumentSnapshot> userDocs) {
 /// [Widget] to display when there are on users found
 Widget noUserCoin(BuildContext context) {
   return GestureDetector(
-    onLongPress: () => ezDialog(
+    onLongPress: () => openDialog(
       context: context,
-      content: [
-        Text(
-          'Nobody!',
-          style: buildTextStyle(style: dialogTitleStyleKey),
-          textAlign: TextAlign.center,
-        ),
-      ],
+      dialog: EzDialog(
+        contents: [
+          Text(
+            'Nobody!',
+            style: buildTextStyle(style: dialogTitleStyleKey),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     ),
     child: Container(
       decoration: BoxDecoration(
@@ -83,15 +85,17 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
       [
         GestureDetector(
           // On long press: display the user's profile name
-          onLongPress: () => ezDialog(
+          onLongPress: () => openDialog(
             context: context,
-            content: [
-              Text(
-                profile.name,
-                style: buildTextStyle(style: dialogTitleStyleKey),
-                textAlign: TextAlign.center,
-              ),
-            ],
+            dialog: EzDialog(
+              contents: [
+                Text(
+                  profile.name,
+                  style: buildTextStyle(style: dialogTitleStyleKey),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
           child: CircleAvatar(
             foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
@@ -109,7 +113,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
     centered: true,
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    direction: Axis.horizontal,
+    scrollDirection: Axis.horizontal,
   );
 }
 
