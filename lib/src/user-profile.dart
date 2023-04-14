@@ -104,7 +104,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
     );
   });
 
-  return ezScrollView(
+  return EzScrollView(
     children: children,
     centered: true,
     mainAxisSize: MainAxisSize.max,
@@ -156,5 +156,33 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
     ]);
   });
 
-  return ezScrollView(children: children, centered: true);
+  return EzScrollView(children: children, centered: true);
+}
+
+/// Wraps [PlatformListTile]s in an [EzScrollView] with a [title]
+/// Optionally provide a height limit, 1/3 [screenHeight] will be used as default
+Widget addProfilesWindow({
+  required BuildContext context,
+  required String title,
+  required List<PlatformListTile> items,
+  double? customHeight,
+}) {
+  Color themeColor = Color(EzConfig.prefs[themeColorKey]);
+  TextStyle titleStyle = buildTextStyle(style: titleStyleKey);
+
+  return Container(
+    width: screenWidth(context),
+    height: customHeight ?? screenHeight(context) / 3.0,
+    decoration: BoxDecoration(
+      color: themeColor.withOpacity(themeColor.opacity * 0.75),
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(title, style: titleStyle),
+        EzScrollView(children: items),
+      ],
+    ),
+  );
 }

@@ -281,7 +281,7 @@ Future<dynamic> confirmTransfer(
       ]);
     });
 
-    return ezScrollView(children: children, centered: true);
+    return EzScrollView(children: children, centered: true);
   }
 
   // Actual pop-up
