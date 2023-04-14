@@ -194,7 +194,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         context: context,
         onConfirm: () async {
           // Close keyboard if open
-          EzConfig.focus.primaryFocus?.unfocus();
+          closeFocus();
 
           // Don't do anything if the url is invalid
           if (!urlFormKey.currentState!.validate()) {
@@ -266,7 +266,7 @@ Future<dynamic> editName(BuildContext context) {
         context: context,
         onConfirm: () async {
           // Close keyboard if open
-          EzConfig.focus.primaryFocus?.unfocus();
+          closeFocus();
 
           // Don't do anything if the display name is invalid
           if (!nameFormKey.currentState!.validate()) {
