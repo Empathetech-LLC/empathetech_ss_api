@@ -232,7 +232,7 @@ Future<dynamic> editAvatar(BuildContext context) {
       ],
       needsClose: false,
     ),
-  );
+  ).then((_) => _urlController.dispose());
 }
 
 /// Gets the users display name
@@ -310,5 +310,5 @@ Future<dynamic> editName(BuildContext context) {
       ],
       needsClose: false,
     ),
-  );
+  ).then((_) => _nameController.dispose());
 }

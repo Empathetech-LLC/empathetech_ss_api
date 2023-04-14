@@ -220,7 +220,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
       ],
       needsClose: false,
     ),
-  );
+  ).then((_) => _messageController.dispose());
 }
 
 /// Optionally transfer the signal to a new owner in firestore
