@@ -269,7 +269,7 @@ Future<dynamic> confirmTransfer(
               ),
 
               // Display name
-              ezText(
+              Text(
                 profile.name,
                 style: buildTextStyle(style: dialogTitleStyleKey),
                 textAlign: TextAlign.start,

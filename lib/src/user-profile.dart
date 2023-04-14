@@ -49,7 +49,7 @@ Widget noUserCoin(BuildContext context) {
     onLongPress: () => ezDialog(
       context: context,
       content: [
-        ezText(
+        Text(
           'Nobody!',
           style: buildTextStyle(style: dialogTitleStyleKey),
           textAlign: TextAlign.center,
@@ -86,7 +86,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
           onLongPress: () => ezDialog(
             context: context,
             content: [
-              ezText(
+              Text(
                 profile.name,
                 style: buildTextStyle(style: dialogTitleStyleKey),
                 textAlign: TextAlign.center,
@@ -145,7 +145,7 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
           ),
 
           // Display name
-          ezText(
+          Text(
             profile.name,
             style: buildTextStyle(style: dialogTitleStyleKey),
             textAlign: TextAlign.start,
