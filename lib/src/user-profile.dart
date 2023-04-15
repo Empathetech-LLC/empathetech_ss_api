@@ -52,7 +52,7 @@ Widget noUserCoin(BuildContext context) {
         contents: [
           EzText.simple(
             'Nobody!',
-            style: buildTextStyle(style: dialogTitleStyleKey),
+            style: buildTextStyle(styleKey: dialogTitleStyleKey),
             textAlign: TextAlign.center,
           ),
         ],
@@ -91,7 +91,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
               contents: [
                 EzText.simple(
                   profile.name,
-                  style: buildTextStyle(style: dialogTitleStyleKey),
+                  style: buildTextStyle(styleKey: dialogTitleStyleKey),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -151,7 +151,7 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
           // Display name
           EzText.simple(
             profile.name,
-            style: buildTextStyle(style: dialogTitleStyleKey),
+            style: buildTextStyle(styleKey: dialogTitleStyleKey),
             textAlign: TextAlign.start,
           ),
         ],
@@ -172,7 +172,7 @@ Widget addProfilesWindow({
   double? customHeight,
 }) {
   Color themeColor = Color(EzConfig.prefs[themeColorKey]);
-  TextStyle titleStyle = buildTextStyle(style: titleStyleKey);
+  TextStyle titleStyle = buildTextStyle(styleKey: titleStyleKey);
 
   return Container(
     width: screenWidth(context),

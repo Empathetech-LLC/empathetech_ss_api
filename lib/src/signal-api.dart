@@ -167,7 +167,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
     dialog: EzDialog(
       title: EzText.simple(
         'New message...',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         // Text field
@@ -277,7 +277,7 @@ Future<dynamic> confirmTransfer(
               // Display name
               EzText.simple(
                 profile.name,
-                style: buildTextStyle(style: dialogTitleStyleKey),
+                style: buildTextStyle(styleKey: dialogTitleStyleKey),
                 textAlign: TextAlign.start,
               ),
             ],
@@ -296,7 +296,7 @@ Future<dynamic> confirmTransfer(
     dialog: EzDialog(
       title: EzText.simple(
         'Select user',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         StreamBuilder<QuerySnapshot>(
@@ -318,7 +318,7 @@ Future<dynamic> confirmTransfer(
                   return Center(
                     child: EzText.simple(
                       snapshot.error.toString(),
-                      style: buildTextStyle(style: errorStyleKey),
+                      style: buildTextStyle(styleKey: errorStyleKey),
                     ),
                   );
                 }
@@ -340,7 +340,7 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
     dialog: EzDialog(
       title: EzText.simple(
         'Delete $title?',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         ezYesNo(
@@ -380,7 +380,7 @@ Future<dynamic> confirmDeparture(
     dialog: EzDialog(
       title: EzText.simple(
         'Leave $title?',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         ezYesNo(

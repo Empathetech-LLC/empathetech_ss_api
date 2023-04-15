@@ -79,7 +79,7 @@ Future<dynamic> logout(BuildContext context) {
     dialog: EzDialog(
       title: EzText.simple(
         'Logout?',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         ezYesNo(
@@ -191,7 +191,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         EzText.simple(
           'Images are expensive to store!\nPaste an image link and that will be used',
           maxLines: 2,
-          style: buildTextStyle(style: dialogContentStyleKey),
+          style: buildTextStyle(styleKey: dialogContentStyleKey),
           textAlign: TextAlign.center,
         ),
         Container(height: dialogSpacer),
@@ -260,7 +260,7 @@ Future<dynamic> editName(BuildContext context) {
     dialog: EzDialog(
       title: EzText.simple(
         'Who are you?',
-        style: buildTextStyle(style: dialogTitleStyleKey),
+        style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
       contents: [
         // Name field
