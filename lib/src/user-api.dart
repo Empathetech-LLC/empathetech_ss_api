@@ -77,7 +77,7 @@ Future<dynamic> logout(BuildContext context) {
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'Logout?',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),
@@ -188,7 +188,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         Container(height: dialogSpacer),
 
         // Explanation for not using image files
-        Text(
+        EzText(
           'Images are expensive to store!\nPaste an image link and that will be used',
           maxLines: 2,
           style: buildTextStyle(style: dialogContentStyleKey),
@@ -258,7 +258,7 @@ Future<dynamic> editName(BuildContext context) {
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'Who are you?',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),

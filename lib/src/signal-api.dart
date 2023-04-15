@@ -165,7 +165,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'New message...',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),
@@ -275,7 +275,7 @@ Future<dynamic> confirmTransfer(
               ),
 
               // Display name
-              Text(
+              EzText(
                 profile.name,
                 style: buildTextStyle(style: dialogTitleStyleKey),
                 textAlign: TextAlign.start,
@@ -294,7 +294,7 @@ Future<dynamic> confirmTransfer(
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'Select user',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),
@@ -316,7 +316,7 @@ Future<dynamic> confirmTransfer(
               default:
                 if (snapshot.hasError) {
                   return Center(
-                    child: Text(
+                    child: EzText(
                       snapshot.error.toString(),
                       style: buildTextStyle(style: errorStyleKey),
                     ),
@@ -338,7 +338,7 @@ Future<dynamic> confirmDelete(BuildContext context, String title, List<String> p
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'Delete $title?',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),
@@ -378,7 +378,7 @@ Future<dynamic> confirmDeparture(
   return openDialog(
     context: context,
     dialog: EzDialog(
-      title: Text(
+      title: EzText(
         'Leave $title?',
         style: buildTextStyle(style: dialogTitleStyleKey),
       ),
