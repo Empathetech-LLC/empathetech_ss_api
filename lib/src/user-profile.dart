@@ -110,7 +110,6 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
 
   return EzScrollView(
     children: children,
-    centered: true,
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     scrollDirection: Axis.horizontal,
@@ -160,7 +159,7 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
     ]);
   });
 
-  return EzScrollView(children: children, centered: true);
+  return EzScrollView(children: children);
 }
 
 /// Wraps [PlatformListTile]s in an [EzScrollView] with a [title]
