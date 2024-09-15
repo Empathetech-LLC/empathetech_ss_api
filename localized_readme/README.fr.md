@@ -1,10 +1,10 @@
 # Smoke Signal API
-[![da](https://img.shields.io/badge/lang-da-red.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.da.md)
+[![da](https://img.shields.io/badge/lang-da-red.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/localized_readme/README.da.md)
 [![en](https://img.shields.io/badge/lang-en-white.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.md)
-[![es](https://img.shields.io/badge/lang-es-red.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.es.md)
-[![fr](https://img.shields.io/badge/lang-fr-white.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.fr.md)
-[![nl](https://img.shields.io/badge/lang-nl-blue.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.nl.md)
-[![nv](https://img.shields.io/badge/lang-nv-yellow.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/README.nv.md)
+[![es](https://img.shields.io/badge/lang-es-red.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/localized_readme/README.es.md)
+[![fr](https://img.shields.io/badge/lang-fr-white.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/localized_readme/README.fr.md)
+[![nl](https://img.shields.io/badge/lang-nl-blue.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/localized_readme/README.nl.md)
+[![nv](https://img.shields.io/badge/lang-nv-yellow.svg)](https://github.com/Empathetech-LLC/smoke_signal/blob/main/localized_readme/README.nv.md)
 
 This is the Firebase backed for Smoke Signal.
 
