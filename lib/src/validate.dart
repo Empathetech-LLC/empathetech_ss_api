@@ -2,14 +2,16 @@ library empathetech_ss_api;
 
 import 'package:email_validator/email_validator.dart';
 
-const String validatorRule = """For display names, signal titles, and signal messages...
+const String validatorRule =
+    '''For display names, signal titles, and signal messages...
 
 - Length 3 -> 20
 - Can contain word characters (upper or lowercase)
 - Can contain digits
 - Can contain -_!?^,
-- Can contain whitespace""";
+- Can contain whitespace''';
 
+/// r'^[\d\w\s-_!,?^]{3,20}$'
 final RegExp validatorRegex = new RegExp(r'^[\d\w\s-_!,?^]{3,20}$');
 
 /// Validate emails via [EmailValidator]
@@ -35,7 +37,9 @@ String? urlValidator(String? toCheck) {
 
 /// Validate signal titles via [validatorRegex]
 String? signalTitleValidator(String? toCheck) {
-  return (toCheck != null && !validatorRegex.hasMatch(toCheck)) ? 'Invalid title' : null;
+  return (toCheck != null && !validatorRegex.hasMatch(toCheck))
+      ? 'Invalid title'
+      : null;
 }
 
 /// Validate signal notification messages via [validatorRegex]
