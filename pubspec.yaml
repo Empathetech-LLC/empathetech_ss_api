@@ -14,15 +14,15 @@ dependencies:
   # Google
   flutter:
     sdk: flutter
-  firebase_auth: ^4.1.4
-  firebase_messaging: ^14.1.2
-  cloud_firestore: ^4.1.0
-  cloud_functions: ^4.0.10
+  firebase_auth: ^5.2.1
+  firebase_messaging: ^15.1.1
+  cloud_firestore: ^5.4.1
+  cloud_functions: ^5.1.1
 
   # Community
-  cached_network_image: ^3.2.3
-  flutter_platform_widgets: ^3.2.0
-  email_validator: ^2.1.17
+  cached_network_image: ^3.4.1
+  flutter_platform_widgets: ^7.0.1
+  email_validator: ^3.0.0
 
   # Switch-comment me during dev!
   empathetech_flutter_ui:
@@ -31,5 +31,5 @@ dependencies:
   
 
 dev_dependencies:
-  dependency_validator: ^3.0.0
+  dependency_validator: ^4.1.0
   
