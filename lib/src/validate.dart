@@ -1,4 +1,7 @@
-library empathetech_ss_api;
+/* empathetech_ss_api
+ * Copyright (c) 2022-2024 Empathetech LLC. All rights reserved.
+ * See LICENSE for distribution and usage details.
+ */
 
 import 'package:email_validator/email_validator.dart';
 
