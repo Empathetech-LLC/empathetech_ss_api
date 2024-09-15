@@ -1,7 +1,6 @@
 library empathetech_ss_api;
 
 import 'package:flutter/material.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:empathetech_ss_api/empathetech_ss_api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,7 +17,7 @@ Stream<QuerySnapshot<Object?>> streamSignals(String filter) {
         .where(filter, arrayContains: AppUser.account.uid)
         .snapshots();
   } catch (e) {
-    return Stream.empty();
+    return const Stream<QuerySnapshot<Object?>>.empty();
   }
 }
 
@@ -33,7 +32,8 @@ Future<bool> addToDB({
 }) async {
   try {
     // Check to see if a document with the same name exists
-    final check = await AppUser.db.collection(signalsPath).doc(title).get();
+    final DocumentSnapshot<Map<String, dynamic>> check =
+        await AppUser.db.collection(signalsPath).doc(title).get();
 
     if (check.exists) {
       logAlert(context: context, message: 'That name is taken!');
@@ -42,11 +42,12 @@ Future<bool> addToDB({
 
     // Upload the new document
     await AppUser.db.collection(signalsPath).doc(title).set(
-      {
+      <String, dynamic>{
         messagePath: message,
-        membersPath: [AppUser.account.uid],
+        membersPath: <String>[AppUser.account.uid],
         ownerPath: AppUser.account.uid,
-        activeMembersPath: isActive ? [AppUser.account.uid] : [],
+        activeMembersPath:
+            isActive ? <String>[AppUser.account.uid] : <String>[],
         memberReqsPath: requestIDs,
       },
     );
@@ -63,43 +64,30 @@ Future<bool> addToDB({
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<void> toggleParticipation({
   required BuildContext context,
-  required bool joined,
+  required bool active,
   required String title,
   required List<String> memberIDs,
   required String message,
 }) async {
   try {
-    if (joined) {
+    if (active) {
+      // User is already active, remove from the list
       await AppUser.db.collection(signalsPath).doc(title).update(
-        {
-          activeMembersPath: FieldValue.arrayRemove([AppUser.account.uid])
+        <String, dynamic>{
+          activeMembersPath: FieldValue.arrayRemove(
+            <String>[AppUser.account.uid],
+          )
         },
       );
     } else {
+      // User is inactive, add to the list
       await AppUser.db.collection(signalsPath).doc(title).update(
-        {
-          activeMembersPath: FieldValue.arrayUnion([AppUser.account.uid])
+        <String, dynamic>{
+          activeMembersPath: FieldValue.arrayUnion(
+            <String>[AppUser.account.uid],
+          )
         },
       );
-
-      // Notify members (if there's anyone to notify)
-      List<String> others = new List.from(memberIDs);
-      others.remove(AppUser.account.uid);
-
-      if (others.isNotEmpty) {
-        List<String> tokens = await gatherTokens(others);
-        if (tokens.isEmpty) return;
-
-        try {
-          await FirebaseFunctions.instance.httpsCallable(sendPushFunc).call({
-            tokenData: tokens,
-            titleData: title,
-            bodyData: message,
-          });
-        } on FirebaseFunctionsException catch (e) {
-          logAlert(context: context, message: e.toString());
-        }
-      }
     }
   } catch (e) {
     logAlert(context: context, message: e.toString());
@@ -115,7 +103,7 @@ Future<void> requestMembers({
 }) async {
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
-      {
+      <String, dynamic>{
         memberReqsPath: FieldValue.arrayUnion(toAdd),
       },
     );
@@ -129,9 +117,9 @@ Future<void> requestMembers({
 Future<void> acceptInvite(BuildContext context, String title) async {
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
-      {
-        membersPath: FieldValue.arrayUnion([AppUser.account.uid]),
-        memberReqsPath: FieldValue.arrayRemove([AppUser.account.uid]),
+      <String, dynamic>{
+        membersPath: FieldValue.arrayUnion(<String>[AppUser.account.uid]),
+        memberReqsPath: FieldValue.arrayRemove(<String>[AppUser.account.uid]),
       },
     );
   } catch (e) {
@@ -144,8 +132,8 @@ Future<void> acceptInvite(BuildContext context, String title) async {
 Future<void> declineInvite(BuildContext context, String title) async {
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
-      {
-        memberReqsPath: FieldValue.arrayRemove([AppUser.account.uid]),
+      <String, dynamic>{
+        memberReqsPath: FieldValue.arrayRemove(<String>[AppUser.account.uid]),
       },
     );
   } catch (e) {
@@ -158,7 +146,7 @@ Future<void> declineInvite(BuildContext context, String title) async {
 Future<void> resetSignal(BuildContext context, String title) async {
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
-      {activeMembersPath: []},
+      <String, dynamic>{activeMembersPath: <String>[]},
     );
   } catch (e) {
     logAlert(context: context, message: e.toString());
@@ -169,8 +157,8 @@ Future<void> resetSignal(BuildContext context, String title) async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new message [String] on success
 Future<dynamic> updateMessage(BuildContext context, String title) {
-  final messageFormKey = GlobalKey<FormState>();
-  TextEditingController _messageController = TextEditingController();
+  final GlobalKey<FormState> messageFormKey = GlobalKey<FormState>();
+  final TextEditingController messageController = TextEditingController();
 
   return showPlatformDialog(
     context: context,
@@ -184,12 +172,12 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
         try {
           // Upload the new message
-          String message = _messageController.text.trim();
+          final String message = messageController.text.trim();
           await AppUser.db.collection(signalsPath).doc(title).update(
-            {messagePath: message},
+            <String, dynamic>{messagePath: message},
           );
 
-          Navigator.of(context).pop(message);
+          Navigator.of(dialogContext).pop(message);
         } catch (e) {
           logAlert(context: context, message: e.toString());
           return;
@@ -202,7 +190,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
         title: const Text('New message...'),
         content: TextFormField(
           key: messageFormKey,
-          controller: _messageController,
+          controller: messageController,
           initialValue: 'Notification',
           validator: signalMessageValidator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -223,7 +211,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
         needsClose: false,
       );
     },
-  ).then((_) => _messageController.dispose());
+  ).then((_) => messageController.dispose());
 }
 
 /// Optionally transfer the signal to a new owner in firestore
@@ -234,101 +222,84 @@ Future<dynamic> confirmTransfer({
   required String title,
   required List<String> members,
 }) {
-  List<String> others = new List.from(members);
+  final List<String> others = List<String>.from(members);
   others.remove(AppUser.account.uid);
 
-  // Build a list of profile buttons that, on tap, update ownership in the db
-  Widget buildSelectors(List<UserProfile> memberProfiles) {
-    // Return an "avatar" of the none icon if there are no other members
-    if (memberProfiles.isEmpty)
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          noUserCoin(context),
-          Container(height: dialogSpacer),
-        ],
-      );
-
-    List<Widget> children = [];
-
-    // Build the rows
-    memberProfiles.forEach((profile) {
-      children.addAll([
-        GestureDetector(
-          onTap: () async {
-            try {
-              // Set the owner to "this" user
-              await AppUser.db.collection(signalsPath).doc(title).update(
-                {ownerPath: profile.id},
-              );
-              Navigator.of(context).pop(true);
-            } catch (e) {
-              logAlert(context: context, message: e.toString());
-            }
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Profile image/avatar
-              CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
-                minRadius: 35,
-                maxRadius: 35,
-              ),
-
-              // Display name
-              Text(profile.name, textAlign: TextAlign.start),
-            ],
-          ),
-        ),
-        Container(height: dialogSpacer),
-      ]);
-    });
-
-    return EzScrollView(children: children);
-  }
-
-  // Actual pop-up
   return showPlatformDialog(
     context: context,
     builder: (BuildContext dialogContext) {
       return EzAlertDialog(
         title: const Text('Select user'),
-        contents: [
-          StreamBuilder<QuerySnapshot>(
-            stream: streamUsers(others),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return PlatformCircularProgressIndicator(
-                    material: (context, platform) =>
-                        MaterialProgressIndicatorData(
-                      color: Color(EzConfig.prefs[buttonColorKey]),
-                    ),
-                    cupertino: (context, platform) =>
-                        CupertinoProgressIndicatorData(
-                      color: Color(EzConfig.prefs[buttonColorKey]),
-                    ),
-                  );
-                case ConnectionState.done:
-                default:
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        snapshot.error.toString(),
-                        style: buildTextStyle(styleKey: errorStyleKey),
-                      ),
-                    );
-                  }
+        content: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: streamUsers(others),
+          builder: (
+            BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+          ) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const CircularProgressIndicator();
+              case ConnectionState.done:
+              default:
+                if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
 
-                  return buildSelectors(buildProfiles(snapshot.data!.docs));
-              }
-            },
-          ),
-        ],
+                final List<UserProfile> memberProfiles =
+                    buildProfiles(snapshot.data!.docs);
+
+                // Return an "avatar" of the none icon if there are no other members
+                if (memberProfiles.isEmpty) {
+                  return noUserCoin(context);
+                }
+
+                final List<Widget> children = <Widget>[];
+
+                // Build the rows
+                for (final UserProfile profile in memberProfiles) {
+                  children.addAll(<Widget>[
+                    GestureDetector(
+                      onTap: () async {
+                        try {
+                          // Set the owner to "this" user
+                          await AppUser.db
+                              .collection(signalsPath)
+                              .doc(title)
+                              .update(<String, dynamic>{ownerPath: profile.id});
+
+                          Navigator.of(dialogContext).pop(true);
+                        } catch (e) {
+                          logAlert(context: context, message: e.toString());
+                        }
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          // Profile image/avatar
+                          CircleAvatar(
+                            foregroundImage:
+                                CachedNetworkImageProvider(profile.avatarURL),
+                            minRadius: 35,
+                            maxRadius: 35,
+                          ),
+
+                          // Display name
+                          Text(profile.name, textAlign: TextAlign.start),
+                        ],
+                      ),
+                    ),
+                    const EzSpacer(),
+                  ]);
+                }
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: children,
+                );
+            }
+          },
+        ),
       );
     },
   );
@@ -339,41 +310,44 @@ Future<dynamic> confirmTransfer({
 Future<dynamic> confirmDelete({
   required BuildContext context,
   required String title,
-  required List<String> prefKeys,
+  required Set<String> prefKeys,
 }) {
   return showPlatformDialog(
     context: context,
-    dialog: EzAlertDialog(
-      title: Text(
-        'Delete $title?',
-        style: buildTextStyle(styleKey: dialogTitleStyleKey),
-      ),
-      contents: [
-        ezYesNo(
+    builder: (BuildContext dialogContext) {
+      void onConfirm() async {
+        try {
+          // Pop first to avoid errors
+          Navigator.of(dialogContext).pop();
+
+          // Clear local prefs for the signal
+          await EzConfig.removeKeys(prefKeys);
+
+          // Delete the signal from the db
+          await AppUser.db.collection(signalsPath).doc(title).delete();
+        } catch (e) {
+          logAlert(context: context, message: e.toString());
+        }
+      }
+
+      void onDeny() => Navigator.of(dialogContext).pop();
+
+      return EzAlertDialog(
+        content: Text('Delete $title?'),
+        materialActions: ezMaterialActions(
           context: context,
-          onConfirm: () async {
-            try {
-              // Pop first to avoid errors
-              Navigator.of(context).pop();
-
-              // Clear local prefs for the signal
-              prefKeys.forEach((key) {
-                EzConfig.preferences.remove(key);
-              });
-
-              // Delete the signal from the db
-              await AppUser.db.collection(signalsPath).doc(title).delete();
-            } catch (e) {
-              logAlert(context: context, message: e.toString());
-            }
-          },
-          onDeny: () => Navigator.of(context).pop(),
-          axis: Axis.vertical,
-          spacer: EzConfig.prefs[dialogSpacingKey],
+          onConfirm: onConfirm,
+          onDeny: onDeny,
         ),
-      ],
-      needsClose: false,
-    ),
+        cupertinoActions: ezCupertinoActions(
+          context: context,
+          onConfirm: onConfirm,
+          confirmIsDestructive: true,
+          onDeny: onDeny,
+        ),
+        needsClose: false,
+      );
+    },
   );
 }
 
@@ -393,12 +367,12 @@ Future<dynamic> confirmDeparture({
           Navigator.of(dialogContext).pop();
 
           // Clear local prefs for the signal
-          EzConfig.removeKeys(prefKeys);
+          await EzConfig.removeKeys(prefKeys);
 
           // Remove the current user from the list of members
           await AppUser.db.collection(signalsPath).doc(title).update(
-            {
-              membersPath: FieldValue.arrayRemove([AppUser.account.uid])
+            <String, dynamic>{
+              membersPath: FieldValue.arrayRemove(<String>[AppUser.account.uid])
             },
           );
         } catch (e) {
