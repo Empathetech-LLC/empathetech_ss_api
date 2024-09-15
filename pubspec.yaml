@@ -17,6 +17,7 @@ dependencies:
   cloud_functions: ^5.1.1
   firebase_auth: ^5.2.1
   firebase_messaging: ^15.1.1
+  go_router: ^14.2.7
 
   # Community
   cached_network_image: ^3.4.1
