@@ -14,6 +14,7 @@ This is the Firebase backed for Smoke Signal.
 * [Demo](#demo)
 * [Contributing](#contributing)
 * [License](#license)
+* [Credits](#credits)
 
 # Installation
 
@@ -68,3 +69,9 @@ Many thanks for any and all donations!
 # License
 
 [GNU GPLv3](LICENSE)
+
+# Credits
+
+## Translations
+
+[Name](link)
