@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:empathetech_ss_api/empathetech_ss_api.dart';
 import 'package:empathetech_flutter_ui/empathetech_flutter_ui.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 /// Wrapper for housing all Firebase instances
 class AppUser {
@@ -44,12 +45,12 @@ Future<void> attemptAccountCreation(
         break;
 
       default:
-        String message = 'Firebase error on user creation\n' + e.code;
+        final String message = 'Firebase error on user creation\n${e.code}';
         logAlert(context: context, message: message);
         break;
     }
   } catch (e) {
-    String message = 'Error creating user\n' + e.toString();
+    final String message = 'Error creating user\n${e.toString()}';
     logAlert(context: context, message: message);
   }
 }
@@ -59,8 +60,10 @@ Future<void> attemptAccountCreation(
 Future<void> attemptLogin(
     BuildContext context, String email, String password) async {
   try {
-    await AppUser.auth
-        .signInWithEmailAndPassword(email: email, password: password);
+    await AppUser.auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
     // Successful login, return to the home screen
     Navigator.of(context).pop(true);
@@ -75,7 +78,7 @@ Future<void> attemptLogin(
         break;
 
       default:
-        String message = 'Error logging in\n' + e.code;
+        final String message = 'Error logging in\n${e.code}';
         logAlert(context: context, message: message);
         break;
     }
@@ -86,25 +89,33 @@ Future<void> attemptLogin(
 Future<dynamic> logout(BuildContext context) {
   return showPlatformDialog(
     context: context,
-    dialog: EzAlertDialog(
-      title: Text(
-        'Logout?',
-        style: buildTextStyle(styleKey: dialogTitleStyleKey),
-      ),
-      contents: [
-        ezYesNo(
+    builder: (BuildContext dialogContext) {
+      void onConfirm() async {
+        Navigator.of(dialogContext).popUntil((Route<dynamic> route) {
+          return route.settings.name == homePath;
+        });
+
+        await AppUser.auth.signOut();
+      }
+
+      void onDeny() => Navigator.of(dialogContext).pop();
+
+      return EzAlertDialog(
+        content: const Text('Logout?'),
+        materialActions: ezMaterialActions(
           context: context,
-          onConfirm: () async {
-            popUntilHome(context);
-            await AppUser.auth.signOut();
-          },
-          onDeny: () => Navigator.of(context).pop(),
-          axis: Axis.vertical,
-          spacer: EzConfig.prefs[dialogSpacingKey],
+          onConfirm: onConfirm,
+          onDeny: onDeny,
         ),
-      ],
-      needsClose: false,
-    ),
+        cupertinoActions: ezCupertinoActions(
+          context: context,
+          onConfirm: onConfirm,
+          confirmIsDestructive: true,
+          onDeny: onDeny,
+        ),
+        needsClose: false,
+      );
+    },
   );
 }
 
@@ -112,7 +123,7 @@ Future<dynamic> logout(BuildContext context) {
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<String> getToken(String id) async {
   try {
-    DocumentSnapshot userSnap =
+    final DocumentSnapshot<Map<String, dynamic>> userSnap =
         await AppUser.db.collection(usersPath).doc(id).get();
 
     final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
@@ -126,11 +137,12 @@ Future<String> getToken(String id) async {
 /// Get the FCM tokens for all the passed user ids
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<List<String>> gatherTokens(List<String> ids) async {
-  List<Future<String>> tokenReqs =
-      ids.map((id) async => await getToken(id)).toList();
-  List<String> tokens = await Future.wait(tokenReqs);
+  final List<Future<String>> tokenReqs =
+      ids.map((final String id) async => await getToken(id)).toList();
 
-  tokens.removeWhere((token) => token == '');
+  final List<String> tokens = await Future.wait(tokenReqs);
+
+  tokens.removeWhere((final String token) => token == '');
 
   return tokens;
 }
@@ -138,11 +150,11 @@ Future<List<String>> gatherTokens(List<String> ids) async {
 /// Merge the current users FCM token with firestore
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<void> setToken(User currUser) async {
-  String userToken = await AppUser.messager.getToken() ?? '';
+  final String userToken = await AppUser.messager.getToken() ?? '';
 
   // The doc may not exist yet, so use set w/ merge
   await FirebaseFirestore.instance.collection(usersPath).doc(currUser.uid).set(
-    {fcmTokenPath: userToken},
+    <String, dynamic>{fcmTokenPath: userToken},
     SetOptions(merge: true),
   );
 }
@@ -160,14 +172,14 @@ Stream<QuerySnapshot<Map<String, dynamic>>> streamUsers([List<String>? ids]) {
           .snapshots();
     }
   } catch (e) {
-    return Stream.empty();
+    return const Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
   }
 }
 
 /// Gets the users avatar url
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<String> getAvatar() async {
-  DocumentSnapshot userSnap =
+  final DocumentSnapshot<Map<String, dynamic>> userSnap =
       await AppUser.db.collection(usersPath).doc(AppUser.account.uid).get();
 
   final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
@@ -179,80 +191,83 @@ Future<String> getAvatar() async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new URL on success
 Future<dynamic> editAvatar(BuildContext context) {
-  final urlFormKey = GlobalKey<FormState>();
-  TextEditingController _urlController = TextEditingController();
-
-  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
+  final GlobalKey<FormState> urlFormKey = GlobalKey<FormState>();
+  final TextEditingController urlController = TextEditingController();
 
   return showPlatformDialog(
     context: context,
-    dialog: EzAlertDialog(
-      contents: [
-        // URL text field/form
-        EzFormField(
-          key: urlFormKey,
-          controller: _urlController,
-          hintText: 'Enter URL',
-          validator: urlValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
+    builder: (BuildContext dialogContext) {
+      void onConfirm() async {
+        closeKeyboard(dialogContext);
 
-        Container(height: dialogSpacer),
+        // Don't do anything if the url is invalid
+        if (!urlFormKey.currentState!.validate()) {
+          logAlert(context: context, message: 'Invalid URL!');
+          return;
+        }
 
-        // Explanation for not using image files
-        Text(
-          'Images are expensive to store!\nPaste an image link and that will be used',
-          maxLines: 2,
-          style: buildTextStyle(styleKey: dialogContentStyleKey),
-        ),
-        Container(height: dialogSpacer),
+        // Update firestore and the firebase user config
+        final String photoURL = urlController.text.trim();
 
-        // Submit & cancel buttons
-        ezYesNo(
+        try {
+          await AppUser.account.updatePhotoURL(photoURL);
+          await AppUser.db
+              .collection(usersPath)
+              .doc(AppUser.account.uid)
+              .update(
+            <String, dynamic>{avatarURLPath: photoURL},
+          );
+
+          Navigator.of(dialogContext).pop(photoURL);
+        } catch (e) {
+          logAlert(context: context, message: e.toString());
+        }
+      }
+
+      void onDeny() => Navigator.of(dialogContext).pop();
+
+      return EzAlertDialog(
+        contents: <Widget>[
+          TextFormField(
+            key: urlFormKey,
+            controller: urlController,
+            initialValue: 'Enter URL',
+            validator: urlValidator,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+          ),
+          const EzSpacer(),
+
+          // Explanation for not using image files
+          const Text(
+            'Images are expensive to store!\nPaste an image link and that will be used',
+            maxLines: 2,
+          ),
+        ],
+        materialActions: ezMaterialActions(
           context: context,
-          onConfirm: () async {
-            // Close keyboard if open
-            closeFocus();
-
-            // Don't do anything if the url is invalid
-            if (!urlFormKey.currentState!.validate()) {
-              logAlert(context: context, message: 'Invalid URL!');
-              return;
-            }
-
-            // Update firestore and the firebase user config
-            String photoURL = _urlController.text.trim();
-
-            try {
-              await AppUser.account.updatePhotoURL(photoURL);
-              await AppUser.db
-                  .collection(usersPath)
-                  .doc(AppUser.account.uid)
-                  .update(
-                {avatarURLPath: photoURL},
-              );
-
-              Navigator.of(context).pop(photoURL);
-            } catch (e) {
-              logAlert(context: context, message: e.toString());
-            }
-          },
-          onDeny: () => Navigator.of(context).pop(),
-          axis: Axis.vertical,
-          spacer: dialogSpacer,
+          onConfirm: onConfirm,
           confirmMsg: 'Submit',
+          onDeny: onDeny,
           denyMsg: 'Cancel',
         ),
-      ],
-      needsClose: false,
-    ),
-  ).then((_) => _urlController.dispose());
+        cupertinoActions: ezCupertinoActions(
+          context: context,
+          onConfirm: onConfirm,
+          confirmMsg: 'Submit',
+          confirmIsDestructive: true,
+          onDeny: onDeny,
+          denyMsg: 'Cancel',
+        ),
+        needsClose: false,
+      );
+    },
+  ).then((_) => urlController.dispose());
 }
 
 /// Gets the users display name
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<String> getName() async {
-  DocumentSnapshot userSnap =
+  final DocumentSnapshot<Map<String, dynamic>> userSnap =
       await AppUser.db.collection(usersPath).doc(AppUser.account.uid).get();
 
   final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
@@ -264,68 +279,67 @@ Future<String> getName() async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new name on success
 Future<dynamic> editName(BuildContext context) {
-  final nameFormKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-
-  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
+  final GlobalKey<FormState> nameFormKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
 
   return showPlatformDialog(
     context: context,
-    dialog: EzAlertDialog(
-      title: Text(
-        'Who are you?',
-        style: buildTextStyle(styleKey: dialogTitleStyleKey),
-      ),
-      contents: [
-        // Name field
+    builder: (BuildContext dialogContext) {
+      void onConfirm() async {
+        closeKeyboard(dialogContext);
 
-        EzFormField(
+        // Don't do anything if the display name is invalid
+        if (!nameFormKey.currentState!.validate()) {
+          logAlert(context: context, message: 'Invalid display name!');
+          return;
+        }
+
+        // Update firestore and the firebase user config
+        final String newName = nameController.text.trim();
+
+        try {
+          await AppUser.account.updateDisplayName(newName);
+          await AppUser.db
+              .collection(usersPath)
+              .doc(AppUser.account.uid)
+              .update(
+            <String, dynamic>{displayNamePath: newName},
+          );
+
+          Navigator.of(dialogContext).pop(newName);
+        } catch (e) {
+          logAlert(context: context, message: e.toString());
+        }
+      }
+
+      void onDeny() => Navigator.of(dialogContext).pop();
+
+      return EzAlertDialog(
+        title: const Text('Who are you?'),
+        content: TextFormField(
           key: nameFormKey,
-          controller: _nameController,
-          hintText: 'Enter display name',
+          controller: nameController,
+          initialValue: 'Enter display name',
           validator: displayNameValidator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
-        Container(height: dialogSpacer),
-
-        // Submit & cancel buttons
-        ezYesNo(
+        materialActions: ezMaterialActions(
           context: context,
-          onConfirm: () async {
-            // Close keyboard if open
-            closeFocus();
-
-            // Don't do anything if the display name is invalid
-            if (!nameFormKey.currentState!.validate()) {
-              logAlert(context: context, message: 'Invalid display name!');
-              return;
-            }
-
-            // Update firestore and the firebase user config
-            String newName = _nameController.text.trim();
-
-            try {
-              await AppUser.account.updateDisplayName(newName);
-              await AppUser.db
-                  .collection(usersPath)
-                  .doc(AppUser.account.uid)
-                  .update(
-                {displayNamePath: newName},
-              );
-
-              Navigator.of(context).pop(newName);
-            } catch (e) {
-              logAlert(context: context, message: e.toString());
-            }
-          },
-          onDeny: () => Navigator.of(context).pop(),
-          axis: Axis.vertical,
-          spacer: dialogSpacer,
+          onConfirm: onConfirm,
           confirmMsg: 'Submit',
+          onDeny: onDeny,
           denyMsg: 'Cancel',
         ),
-      ],
-      needsClose: false,
-    ),
-  ).then((_) => _nameController.dispose());
+        cupertinoActions: ezCupertinoActions(
+          context: context,
+          onConfirm: onConfirm,
+          confirmMsg: 'Submit',
+          confirmIsDestructive: true,
+          onDeny: onDeny,
+          denyMsg: 'Cancel',
+        ),
+        needsClose: false,
+      );
+    },
+  ).then((_) => nameController.dispose());
 }
