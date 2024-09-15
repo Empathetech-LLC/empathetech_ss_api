@@ -46,11 +46,11 @@ List<UserProfile> buildProfiles(List<DocumentSnapshot> userDocs) {
 /// [Widget] to display when there are on users found
 Widget noUserCoin(BuildContext context) {
   return GestureDetector(
-    onLongPress: () => openDialog(
+    onLongPress: () => showPlatformDialog(
       context: context,
-      dialog: EzDialog(
+      dialog: EzAlertDialog(
         contents: [
-          EzText.simple(
+          Text(
             'Nobody!',
             style: buildTextStyle(styleKey: dialogTitleStyleKey),
           ),
@@ -62,7 +62,7 @@ Widget noUserCoin(BuildContext context) {
         color: Color(EzConfig.prefs[themeColorKey]),
         shape: BoxShape.circle,
       ),
-      child: EzIcon(
+      child: Icon(
         PlatformIcons(context).clear,
         color: Color(EzConfig.prefs[themeTextColorKey]),
         size: 35,
@@ -84,11 +84,11 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
       [
         GestureDetector(
           // On long press: display the user's profile name
-          onLongPress: () => openDialog(
+          onLongPress: () => showPlatformDialog(
             context: context,
-            dialog: EzDialog(
+            dialog: EzAlertDialog(
               contents: [
-                EzText.simple(
+                Text(
                   profile.name,
                   style: buildTextStyle(styleKey: dialogTitleStyleKey),
                 ),
@@ -146,7 +146,7 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
           ),
 
           // Display name
-          EzText.simple(
+          Text(
             profile.name,
             style: buildTextStyle(styleKey: dialogTitleStyleKey),
             textAlign: TextAlign.start,
@@ -181,7 +181,7 @@ Widget addProfilesWindow({
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        EzText.simple(title, style: titleStyle),
+        Text(title, style: titleStyle),
         EzScrollView(children: items),
       ],
     ),

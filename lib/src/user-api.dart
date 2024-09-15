@@ -21,52 +21,60 @@ class AppUser {
 Future<void> attemptAccountCreation(
     BuildContext context, String email, String password) async {
   try {
-    await AppUser.auth.createUserWithEmailAndPassword(email: email, password: password);
+    await AppUser.auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
     // Successful login, return to the home screen
-    popScreen(context: context, pass: true);
+    Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
-        logAlert(context, 'Email already in use');
+        logAlert(context: context, message: 'Email already in use');
         break;
 
       case 'weak-password':
-        logAlert(context, 'The provided password is too weak');
+        logAlert(
+          context: context,
+          message: 'The provided password is too weak',
+        );
         break;
 
       default:
         String message = 'Firebase error on user creation\n' + e.code;
-        logAlert(context, message);
+        logAlert(context: context, message: message);
         break;
     }
   } catch (e) {
     String message = 'Error creating user\n' + e.toString();
-    logAlert(context, message);
+    logAlert(context: context, message: message);
   }
 }
 
 /// Attempt logging in firebase user with passed credentials
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<void> attemptLogin(BuildContext context, String email, String password) async {
+Future<void> attemptLogin(
+    BuildContext context, String email, String password) async {
   try {
-    await AppUser.auth.signInWithEmailAndPassword(email: email, password: password);
+    await AppUser.auth
+        .signInWithEmailAndPassword(email: email, password: password);
 
     // Successful login, return to the home screen
-    popScreen(context: context, pass: true);
+    Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
-        logAlert(context, 'No user found for that email!');
+        logAlert(context: context, message: 'No user found for that email!');
         break;
 
       case 'wrong-password':
-        logAlert(context, 'Incorrect password');
+        logAlert(context: context, message: 'Incorrect password');
         break;
 
       default:
         String message = 'Error logging in\n' + e.code;
-        logAlert(context, message);
+        logAlert(context: context, message: message);
         break;
     }
   }
@@ -74,10 +82,10 @@ Future<void> attemptLogin(BuildContext context, String email, String password) a
 
 /// Logout current user
 Future<dynamic> logout(BuildContext context) {
-  return openDialog(
+  return showPlatformDialog(
     context: context,
-    dialog: EzDialog(
-      title: EzText.simple(
+    dialog: EzAlertDialog(
+      title: Text(
         'Logout?',
         style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
@@ -88,7 +96,7 @@ Future<dynamic> logout(BuildContext context) {
             popUntilHome(context);
             await AppUser.auth.signOut();
           },
-          onDeny: () => popScreen(context: context),
+          onDeny: () => Navigator.of(context).pop(),
           axis: Axis.vertical,
           spacer: EzConfig.prefs[dialogSpacingKey],
         ),
@@ -102,7 +110,8 @@ Future<dynamic> logout(BuildContext context) {
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<String> getToken(String id) async {
   try {
-    DocumentSnapshot userSnap = await AppUser.db.collection(usersPath).doc(id).get();
+    DocumentSnapshot userSnap =
+        await AppUser.db.collection(usersPath).doc(id).get();
 
     final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
 
@@ -115,7 +124,8 @@ Future<String> getToken(String id) async {
 /// Get the FCM tokens for all the passed user ids
 /// This can cost money! [https://firebase.google.com/pricing/]
 Future<List<String>> gatherTokens(List<String> ids) async {
-  List<Future<String>> tokenReqs = ids.map((id) async => await getToken(id)).toList();
+  List<Future<String>> tokenReqs =
+      ids.map((id) async => await getToken(id)).toList();
   List<String> tokens = await Future.wait(tokenReqs);
 
   tokens.removeWhere((token) => token == '');
@@ -172,9 +182,9 @@ Future<dynamic> editAvatar(BuildContext context) {
 
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
-  return openDialog(
+  return showPlatformDialog(
     context: context,
-    dialog: EzDialog(
+    dialog: EzAlertDialog(
       contents: [
         // URL text field/form
         EzFormField(
@@ -188,7 +198,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         Container(height: dialogSpacer),
 
         // Explanation for not using image files
-        EzText.simple(
+        Text(
           'Images are expensive to store!\nPaste an image link and that will be used',
           maxLines: 2,
           style: buildTextStyle(styleKey: dialogContentStyleKey),
@@ -204,7 +214,7 @@ Future<dynamic> editAvatar(BuildContext context) {
 
             // Don't do anything if the url is invalid
             if (!urlFormKey.currentState!.validate()) {
-              logAlert(context, 'Invalid URL!');
+              logAlert(context: context, message: 'Invalid URL!');
               return;
             }
 
@@ -213,16 +223,19 @@ Future<dynamic> editAvatar(BuildContext context) {
 
             try {
               await AppUser.account.updatePhotoURL(photoURL);
-              await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+              await AppUser.db
+                  .collection(usersPath)
+                  .doc(AppUser.account.uid)
+                  .update(
                 {avatarURLPath: photoURL},
               );
 
-              popScreen(context: context, pass: photoURL);
+              Navigator.of(context).pop(photoURL);
             } catch (e) {
-              logAlert(context, e.toString());
+              logAlert(context: context, message: e.toString());
             }
           },
-          onDeny: () => popScreen(context: context),
+          onDeny: () => Navigator.of(context).pop(),
           axis: Axis.vertical,
           spacer: dialogSpacer,
           confirmMsg: 'Submit',
@@ -254,10 +267,10 @@ Future<dynamic> editName(BuildContext context) {
 
   double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
 
-  return openDialog(
+  return showPlatformDialog(
     context: context,
-    dialog: EzDialog(
-      title: EzText.simple(
+    dialog: EzAlertDialog(
+      title: Text(
         'Who are you?',
         style: buildTextStyle(styleKey: dialogTitleStyleKey),
       ),
@@ -282,7 +295,7 @@ Future<dynamic> editName(BuildContext context) {
 
             // Don't do anything if the display name is invalid
             if (!nameFormKey.currentState!.validate()) {
-              logAlert(context, 'Invalid display name!');
+              logAlert(context: context, message: 'Invalid display name!');
               return;
             }
 
@@ -291,16 +304,19 @@ Future<dynamic> editName(BuildContext context) {
 
             try {
               await AppUser.account.updateDisplayName(newName);
-              await AppUser.db.collection(usersPath).doc(AppUser.account.uid).update(
+              await AppUser.db
+                  .collection(usersPath)
+                  .doc(AppUser.account.uid)
+                  .update(
                 {displayNamePath: newName},
               );
 
-              popScreen(context: context, pass: newName);
+              Navigator.of(context).pop(newName);
             } catch (e) {
-              logAlert(context, e.toString());
+              logAlert(context: context, message: e.toString());
             }
           },
-          onDeny: () => popScreen(context: context),
+          onDeny: () => Navigator.of(context).pop(),
           axis: Axis.vertical,
           spacer: dialogSpacer,
           confirmMsg: 'Submit',
