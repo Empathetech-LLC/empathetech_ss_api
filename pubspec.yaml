@@ -1,35 +1,37 @@
 name: empathetech_ss_api
-description: Firebase API code for Empathetech's Smoke Signal
-version: 1.0.1
+description: "Needs new name"
+version: 2.0.0
 repository: https://github.com/Empathetech-LLC/empathetech_ss_api
 
-# Un-comment me during dev!
-publish_to: none
-
 environment:
-  sdk: '>=2.19.6 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
-  # Google
   flutter:
     sdk: flutter
-  firebase_auth: ^5.2.1
-  firebase_messaging: ^15.1.1
+  flutter_localizations:
+    sdk: flutter
+
+  # Flutter (Google)
   cloud_firestore: ^5.4.1
   cloud_functions: ^5.1.1
+  firebase_auth: ^5.2.1
+  firebase_messaging: ^15.1.1
 
   # Community
   cached_network_image: ^3.4.1
-  flutter_platform_widgets: ^7.0.1
   email_validator: ^3.0.0
+  flutter_platform_widgets: ^7.0.1
 
-  # Switch-comment me during dev!
   empathetech_flutter_ui:
     path: ../empathetech_flutter_ui
-  # empathetech_flutter_ui: ^1.1.4
-  
 
 dev_dependencies:
+  dartdoc: ^8.1.0
   dependency_validator: ^4.1.0
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
   
+flutter:
+  generate: true # For l10n
