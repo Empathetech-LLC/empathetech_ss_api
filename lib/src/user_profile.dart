@@ -20,28 +20,31 @@ class UserProfile {
   UserProfile(this.id, this.name, this.avatarURL);
 
   /// Builds a local [UserProfile] from a Firestore (user) [DocumentSnapshot]
-  static UserProfile buildFromDoc(DocumentSnapshot userDoc) {
-    final data = userDoc.data() as Map<String, dynamic>;
+  static UserProfile buildFromDoc(
+    DocumentSnapshot<Map<String, dynamic>> userDoc,
+  ) {
+    final Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
     return UserProfile(userDoc.id, data[displayNamePath], data[avatarURLPath]);
   }
 
   @override
   bool operator ==(Object other) =>
-      other is UserProfile && this.id == other.id && this.name == other.name;
+      other is UserProfile && id == other.id && name == other.name;
 
   @override
-  int get hashCode => Object.hash(this.id, this.name);
+  int get hashCode => Object.hash(id, name);
 
   @override
-  String toString() {
-    return this.name;
-  }
+  String toString() => name;
 }
 
 /// Map all Firebase [DocumentSnapshot] user docs to local [UserProfile]s
-List<UserProfile> buildProfiles(List<DocumentSnapshot> userDocs) {
+List<UserProfile> buildProfiles(
+  List<DocumentSnapshot<Map<String, dynamic>>> userDocs,
+) {
   return userDocs
-      .map((DocumentSnapshot userDoc) => UserProfile.buildFromDoc(userDoc))
+      .map((DocumentSnapshot<Map<String, dynamic>> userDoc) =>
+          UserProfile.buildFromDoc(userDoc))
       .toList();
 }
 
@@ -50,25 +53,14 @@ Widget noUserCoin(BuildContext context) {
   return GestureDetector(
     onLongPress: () => showPlatformDialog(
       context: context,
-      dialog: EzAlertDialog(
-        contents: [
-          Text(
-            'Nobody!',
-            style: buildTextStyle(styleKey: dialogTitleStyleKey),
-          ),
-        ],
-      ),
+      builder: (_) => EzAlertDialog(content: const Text('Nobody!')),
     ),
     child: Container(
       decoration: BoxDecoration(
-        color: Color(EzConfig.prefs[themeColorKey]),
+        color: Theme.of(context).colorScheme.primary,
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        PlatformIcons(context).clear,
-        color: Color(EzConfig.prefs[themeTextColorKey]),
-        size: 35,
-      ),
+      child: Icon(PlatformIcons(context).clear, size: 35),
     ),
   );
 }
@@ -78,112 +70,80 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
   // Return clear icon on empty list
   if (profiles.isEmpty) return noUserCoin(context);
 
-  List<Widget> children = [];
-
-  // Build the avatars
-  profiles.forEach((profile) {
-    children.addAll(
-      [
-        GestureDetector(
-          // On long press: display the user's profile name
-          onLongPress: () => showPlatformDialog(
-            context: context,
-            dialog: EzAlertDialog(
-              contents: [
-                Text(
-                  profile.name,
-                  style: buildTextStyle(styleKey: dialogTitleStyleKey),
-                ),
-              ],
-            ),
-          ),
-          child: CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
-            minRadius: 35,
-            maxRadius: 35,
-          ),
-        ),
-        Container(width: EzConfig.prefs[paddingKey]),
-      ],
-    );
-  });
-
   return EzScrollView(
-    children: children,
+    scrollDirection: Axis.horizontal,
     mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    scrollDirection: Axis.horizontal,
+    children: profiles
+        .map(
+          (UserProfile profile) => GestureDetector(
+            // On long press: display the user's profile name
+            onLongPress: () => showPlatformDialog(
+              context: context,
+              builder: (_) => EzAlertDialog(
+                content: Text(profile.name),
+              ),
+            ),
+            child: CircleAvatar(
+              foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
+              minRadius: 35,
+              maxRadius: 35,
+            ),
+          ),
+        )
+        .toList(),
   );
 }
 
 /// Displays a list of [UserProfile] pictures alongside their display names
 Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
-  double dialogSpacer = EzConfig.prefs[dialogSpacingKey];
-
   // Return clear icon on empty list
-  if (profiles.isEmpty)
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        noUserCoin(context),
-        Container(height: dialogSpacer),
-      ],
-    );
+  if (profiles.isEmpty) return noUserCoin(context);
 
-  List<Widget> children = [];
+  return EzScrollView(
+    children: profiles
+        .map(
+          (UserProfile profile) => Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              // Profile image/avatar
+              CircleAvatar(
+                foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
+                minRadius: 35,
+                maxRadius: 35,
+              ),
 
-  // Build the rows
-  profiles.forEach((profile) {
-    children.addAll([
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          // Profile image/avatar
-          CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(profile.avatarURL),
-            minRadius: 35,
-            maxRadius: 35,
+              // Display name
+              Text(profile.name, textAlign: TextAlign.start),
+            ],
           ),
-
-          // Display name
-          Text(
-            profile.name,
-            style: buildTextStyle(styleKey: dialogTitleStyleKey),
-            textAlign: TextAlign.start,
-          ),
-        ],
-      ),
-      Container(height: dialogSpacer),
-    ]);
-  });
-
-  return EzScrollView(children: children);
+        )
+        .toList(),
+  );
 }
 
 /// Wraps [PlatformListTile]s in an [EzScrollView] with a [title]
-/// Optionally provide a height limit, 1/3 [screenHeight] will be used as default
+/// Optionally provide a height limit, 1/3 [widthOf] will be used as default
 Widget addProfilesWindow({
   required BuildContext context,
   required String title,
   required List<PlatformListTile> items,
   double? customHeight,
 }) {
-  Color themeColor = Color(EzConfig.prefs[themeColorKey]);
-  TextStyle titleStyle = buildTextStyle(styleKey: titleStyleKey);
+  final ThemeData theme = Theme.of(context);
 
   return Container(
-    width: screenWidth(context),
-    height: customHeight ?? screenHeight(context) / 3.0,
+    width: widthOf(context),
+    height: customHeight ?? heightOf(context) / 3.0,
     decoration: BoxDecoration(
-      color: themeColor.withOpacity(themeColor.opacity * 0.75),
+      color: theme.colorScheme.primary,
       borderRadius: BorderRadius.circular(10.0),
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(title, style: titleStyle),
+      children: <Widget>[
+        Text(title, style: theme.textTheme.titleLarge),
         EzScrollView(children: items),
       ],
     ),
