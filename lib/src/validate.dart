@@ -15,7 +15,7 @@ const String validatorRule =
 - Can contain whitespace''';
 
 /// r'^[\d\w\s-_!,?^]{3,20}$'
-final RegExp validatorRegex = new RegExp(r'^[\d\w\s-_!,?^]{3,20}$');
+final RegExp validatorRegex = RegExp(r'^[\d\w\s-_!,?^]{3,20}$');
 
 /// Validate emails via [EmailValidator]
 String? emailValidator(String? toCheck) {
