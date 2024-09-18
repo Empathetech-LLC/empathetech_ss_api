@@ -13,14 +13,14 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 /// Return documents from the 'signals' collection
 /// Filter by the current user's membership in the passed field
 /// This can cost money! [https://firebase.google.com/pricing/]
-Stream<QuerySnapshot<Object?>> streamSignals(String filter) {
+Stream<QuerySnapshot<Map<String, dynamic>>> streamSignals(String filter) {
   try {
     return AppUser.db
         .collection(signalsPath)
         .where(filter, arrayContains: AppUser.account.uid)
         .snapshots();
   } catch (e) {
-    return const Stream<QuerySnapshot<Object?>>.empty();
+    return const Stream<QuerySnapshot<Map<String, dynamic>>>.empty();
   }
 }
 
