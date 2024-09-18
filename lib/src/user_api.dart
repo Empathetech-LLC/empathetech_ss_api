@@ -30,7 +30,7 @@ Future<void> attemptAccountCreation(
     );
 
     // Successful login, return to the home screen
-    Navigator.of(context).pop(true);
+    if (context.mounted) Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
