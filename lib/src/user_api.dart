@@ -34,24 +34,26 @@ Future<void> attemptAccountCreation(
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
-        logAlert(context: context, message: 'Email already in use');
+        if (context.mounted) logAlert(context, message: 'Email already in use');
         break;
 
       case 'weak-password':
-        logAlert(
-          context: context,
-          message: 'The provided password is too weak',
-        );
+        if (context.mounted) {
+          logAlert(
+            context,
+            message: 'The provided password is too weak',
+          );
+        }
         break;
 
       default:
         final String message = 'Firebase error on user creation\n${e.code}';
-        logAlert(context: context, message: message);
+        logAlert(context, message: message);
         break;
     }
   } catch (e) {
     final String message = 'Error creating user\n${e.toString()}';
-    logAlert(context: context, message: message);
+    if (context.mounted) logAlert(context, message: message);
   }
 }
 
@@ -66,20 +68,23 @@ Future<void> attemptLogin(
     );
 
     // Successful login, return to the home screen
-    Navigator.of(context).pop(true);
+    if (context.mounted) Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
-        logAlert(context: context, message: 'No user found for that email!');
+        if (context.mounted) {
+          logAlert(context, message: 'No user found for that email!');
+        }
         break;
 
       case 'wrong-password':
-        logAlert(context: context, message: 'Incorrect password');
+        if (context.mounted) logAlert(context, message: 'Incorrect password');
+
         break;
 
       default:
         final String message = 'Error logging in\n${e.code}';
-        logAlert(context: context, message: message);
+        logAlert(context, message: message);
         break;
     }
   }
@@ -202,7 +207,7 @@ Future<dynamic> editAvatar(BuildContext context) {
 
         // Don't do anything if the url is invalid
         if (!urlFormKey.currentState!.validate()) {
-          logAlert(context: context, message: 'Invalid URL!');
+          logAlert(context, message: 'Invalid URL!');
           return;
         }
 
@@ -218,9 +223,11 @@ Future<dynamic> editAvatar(BuildContext context) {
             <String, dynamic>{avatarURLPath: photoURL},
           );
 
-          Navigator.of(dialogContext).pop(photoURL);
+          if (dialogContext.mounted) {
+            Navigator.of(dialogContext).pop(photoURL);
+          }
         } catch (e) {
-          logAlert(context: context, message: e.toString());
+          if (context.mounted) logAlert(context, message: e.toString());
         }
       }
 
@@ -290,7 +297,7 @@ Future<dynamic> editName(BuildContext context) {
 
         // Don't do anything if the display name is invalid
         if (!nameFormKey.currentState!.validate()) {
-          logAlert(context: context, message: 'Invalid display name!');
+          logAlert(context, message: 'Invalid display name!');
           return;
         }
 
@@ -306,9 +313,9 @@ Future<dynamic> editName(BuildContext context) {
             <String, dynamic>{displayNamePath: newName},
           );
 
-          Navigator.of(dialogContext).pop(newName);
+          if (dialogContext.mounted) Navigator.of(dialogContext).pop(newName);
         } catch (e) {
-          logAlert(context: context, message: e.toString());
+          if (context.mounted) logAlert(context, message: e.toString());
         }
       }
 

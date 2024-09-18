@@ -39,7 +39,7 @@ Future<bool> addToDB({
         await AppUser.db.collection(signalsPath).doc(title).get();
 
     if (check.exists) {
-      logAlert(context: context, message: 'That name is taken!');
+      logAlert(context, message: 'That name is taken!');
       return false;
     }
 
@@ -57,7 +57,7 @@ Future<bool> addToDB({
 
     return true;
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
     return false;
   }
 }
@@ -93,7 +93,7 @@ Future<void> toggleParticipation({
       );
     }
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
   }
 }
 
@@ -111,7 +111,7 @@ Future<void> requestMembers({
       },
     );
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
   }
 }
 
@@ -126,7 +126,7 @@ Future<void> acceptInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
   }
 }
 
@@ -140,7 +140,7 @@ Future<void> declineInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
   }
 }
 
@@ -152,7 +152,7 @@ Future<void> resetSignal(BuildContext context, String title) async {
       <String, dynamic>{activeMembersPath: <String>[]},
     );
   } catch (e) {
-    logAlert(context: context, message: e.toString());
+    logAlert(context, message: e.toString());
   }
 }
 
@@ -169,7 +169,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
       void onConfirm() async {
         // Don't do anything if the message is invalid
         if (!messageFormKey.currentState!.validate()) {
-          logAlert(context: context, message: 'Invalid message!');
+          logAlert(context, message: 'Invalid message!');
           return;
         }
 
@@ -182,7 +182,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
           Navigator.of(dialogContext).pop(message);
         } catch (e) {
-          logAlert(context: context, message: e.toString());
+          logAlert(context, message: e.toString());
           return;
         }
       }
@@ -272,7 +272,7 @@ Future<dynamic> confirmTransfer({
 
                           Navigator.of(dialogContext).pop(true);
                         } catch (e) {
-                          logAlert(context: context, message: e.toString());
+                          logAlert(context, message: e.toString());
                         }
                       },
                       child: Row(
@@ -329,7 +329,7 @@ Future<dynamic> confirmDelete({
           // Delete the signal from the db
           await AppUser.db.collection(signalsPath).doc(title).delete();
         } catch (e) {
-          logAlert(context: context, message: e.toString());
+          logAlert(context, message: e.toString());
         }
       }
 
@@ -379,7 +379,7 @@ Future<dynamic> confirmDeparture({
             },
           );
         } catch (e) {
-          logAlert(context: context, message: e.toString());
+          logAlert(context, message: e.toString());
         }
       }
 
