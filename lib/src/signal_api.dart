@@ -51,7 +51,7 @@ Future<bool> addToDB({
         ownerPath: AppUser.account.uid,
         activeMembersPath:
             isActive ? <String>[AppUser.account.uid] : <String>[],
-        memberReqsPath: requestIDs,
+        memberRequestsPath: requestIDs,
       },
     );
 
@@ -107,7 +107,7 @@ Future<void> requestMembers({
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
       <String, dynamic>{
-        memberReqsPath: FieldValue.arrayUnion(toAdd),
+        memberRequestsPath: FieldValue.arrayUnion(toAdd),
       },
     );
   } catch (e) {
@@ -122,7 +122,8 @@ Future<void> acceptInvite(BuildContext context, String title) async {
     await AppUser.db.collection(signalsPath).doc(title).update(
       <String, dynamic>{
         membersPath: FieldValue.arrayUnion(<String>[AppUser.account.uid]),
-        memberReqsPath: FieldValue.arrayRemove(<String>[AppUser.account.uid]),
+        memberRequestsPath:
+            FieldValue.arrayRemove(<String>[AppUser.account.uid]),
       },
     );
   } catch (e) {
@@ -136,7 +137,8 @@ Future<void> declineInvite(BuildContext context, String title) async {
   try {
     await AppUser.db.collection(signalsPath).doc(title).update(
       <String, dynamic>{
-        memberReqsPath: FieldValue.arrayRemove(<String>[AppUser.account.uid]),
+        memberRequestsPath:
+            FieldValue.arrayRemove(<String>[AppUser.account.uid]),
       },
     );
   } catch (e) {

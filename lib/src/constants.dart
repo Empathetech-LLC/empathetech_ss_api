@@ -39,8 +39,8 @@ const String membersPath = 'members';
 /// 'owner'
 const String ownerPath = 'owner';
 
-/// 'memberReqs'
-const String memberReqsPath = 'memberReqs';
+/// 'memberRequests'
+const String memberRequestsPath = 'memberRequests';
 
 // Firebase functions //
 
