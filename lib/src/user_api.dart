@@ -122,34 +122,6 @@ Future<dynamic> logout(BuildContext context) {
   );
 }
 
-/// Return the FCM token of the user with the passed ID
-/// This can cost money! [https://firebase.google.com/pricing/]
-Future<String> getToken(String id) async {
-  try {
-    final DocumentSnapshot<Map<String, dynamic>> userSnap =
-        await AppUser.db.collection(usersPath).doc(id).get();
-
-    final Map<String, dynamic> data = userSnap.data() as Map<String, dynamic>;
-
-    return data[fcmTokenPath];
-  } catch (e) {
-    return '';
-  }
-}
-
-/// Get the FCM tokens for all the passed user ids
-/// This can cost money! [https://firebase.google.com/pricing/]
-Future<List<String>> gatherTokens(List<String> ids) async {
-  final List<Future<String>> tokenReqs =
-      ids.map((final String id) async => await getToken(id)).toList();
-
-  final List<String> tokens = await Future.wait(tokenReqs);
-
-  tokens.removeWhere((final String token) => token == '');
-
-  return tokens;
-}
-
 /// Stream user docs from db, optionally filtering by the list of ids we know we want
 /// This can cost money! [https://firebase.google.com/pricing/]
 Stream<QuerySnapshot<Map<String, dynamic>>> streamUsers([List<String>? ids]) {
