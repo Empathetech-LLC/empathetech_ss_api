@@ -134,30 +134,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.1"
-  cloud_functions:
-    dependency: "direct main"
-    description:
-      name: cloud_functions
-      sha256: "225447ae732d01aacc5238f2b6ecea0550d91dbee72924bbbbb17fea70a2ec70"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.2"
-  cloud_functions_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_functions_platform_interface
-      sha256: "0a624fe8a25db0bbc00bf6aece8db843b3af835d16559d3872f3f6021bd7ad35"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.5.36"
-  cloud_functions_web:
-    dependency: transitive
-    description:
-      name: cloud_functions_web
-      sha256: ea5903f58ec62efc3c0c9ec2db0e316d7288bc3eaa30ec88e5e90bf822a4e0cb
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.10.1"
   collection:
     dependency: transitive
     description:
@@ -357,30 +333,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.18.1"
-  firebase_messaging:
-    dependency: "direct main"
-    description:
-      name: firebase_messaging
-      sha256: "32ce60b747e755b48d7112d728d4f736ba82acd98ec825626558d444d385fa3a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "15.1.2"
-  firebase_messaging_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_messaging_platform_interface
-      sha256: "69671a0f1a40c7b7c46ad0283e6f34ca2a59a0362ca14a240a4ea01c46e8a521"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.5.45"
-  firebase_messaging_web:
-    dependency: transitive
-    description:
-      name: firebase_messaging_web
-      sha256: "6890111a9d01d7b13d0f6fe74850812c334e903d2c80a2d9356a3abb8c3a9e9a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.9.1"
   fixnum:
     dependency: transitive
     description:
@@ -427,7 +379,7 @@ packages:
     source: hosted
     version: "4.0.0"
   flutter_localizations:
-    dependency: "direct main"
+    dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -456,7 +408,7 @@ packages:
     source: hosted
     version: "2.0.22"
   flutter_test:
-    dependency: "direct dev"
+    dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -473,14 +425,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: "2ddb88e9ad56ae15ee144ed10e33886777eb5ca2509a914850a5faa7b52ff459"
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.2.7"
   google_fonts:
     dependency: transitive
     description:
