@@ -6,14 +6,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:empathetech_ss_api/empathetech_ss_api.dart';
 import 'package:empathetech_flutter_ui/empathetech_flutter_ui.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 /// Wrapper for housing all Firebase instances
 class AppUser {
-  static late FirebaseMessaging messager;
   static late FirebaseAuth auth;
   static late User account;
   static late FirebaseFirestore db;
@@ -150,18 +148,6 @@ Future<List<String>> gatherTokens(List<String> ids) async {
   tokens.removeWhere((final String token) => token == '');
 
   return tokens;
-}
-
-/// Merge the current users FCM token with firestore
-/// This can cost money! [https://firebase.google.com/pricing/]
-Future<void> setToken(User currUser) async {
-  final String userToken = await AppUser.messager.getToken() ?? '';
-
-  // The doc may not exist yet, so use set w/ merge
-  await FirebaseFirestore.instance.collection(usersPath).doc(currUser.uid).set(
-    <String, dynamic>{fcmTokenPath: userToken},
-    SetOptions(merge: true),
-  );
 }
 
 /// Stream user docs from db, optionally filtering by the list of ids we know we want
