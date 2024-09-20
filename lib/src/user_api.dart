@@ -196,7 +196,7 @@ Future<dynamic> editAvatar(BuildContext context) {
           TextFormField(
             key: urlFormKey,
             controller: urlController,
-            initialValue: 'Enter URL',
+            decoration: const InputDecoration(hintText: 'Enter URL'),
             validator: urlValidator,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
@@ -284,7 +284,7 @@ Future<dynamic> editName(BuildContext context) {
         content: TextFormField(
           key: nameFormKey,
           controller: nameController,
-          initialValue: 'Enter display name',
+          decoration: const InputDecoration(hintText: 'Enter display name'),
           validator: displayNameValidator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),

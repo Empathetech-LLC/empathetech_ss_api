@@ -196,7 +196,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
         content: TextFormField(
           key: messageFormKey,
           controller: messageController,
-          initialValue: 'Notification',
+          decoration: const InputDecoration(hintText: 'Notification'),
           validator: signalMessageValidator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
