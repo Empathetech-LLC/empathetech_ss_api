@@ -138,7 +138,7 @@ Widget addProfilesWindow({
     height: customHeight ?? heightOf(context) / 3.0,
     decoration: BoxDecoration(
       color: theme.colorScheme.primary,
-      borderRadius: BorderRadius.circular(10.0),
+      borderRadius: ezRoundEdge,
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
