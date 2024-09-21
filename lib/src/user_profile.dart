@@ -53,7 +53,9 @@ Widget noUserCoin(BuildContext context) {
   return GestureDetector(
     onLongPress: () => showPlatformDialog(
       context: context,
-      builder: (_) => EzAlertDialog(content: const Text('Nobody!')),
+      builder: (_) => EzAlertDialog(
+        content: const Text('Nobody!', textAlign: TextAlign.center),
+      ),
     ),
     child: Container(
       decoration: BoxDecoration(
@@ -81,7 +83,7 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
             onLongPress: () => showPlatformDialog(
               context: context,
               builder: (_) => EzAlertDialog(
-                content: Text(profile.name),
+                content: Text(profile.name, textAlign: TextAlign.center),
               ),
             ),
             child: CircleAvatar(

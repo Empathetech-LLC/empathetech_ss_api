@@ -192,7 +192,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        title: const Text('New message...'),
+        title: const Text('New message...', textAlign: TextAlign.center),
         content: TextFormField(
           key: messageFormKey,
           controller: messageController,
@@ -234,7 +234,7 @@ Future<dynamic> confirmTransfer({
     context: context,
     builder: (BuildContext dialogContext) {
       return EzAlertDialog(
-        title: const Text('Select user'),
+        title: const Text('Select user', textAlign: TextAlign.center),
         content: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: streamUsers(others),
           builder: (
@@ -342,7 +342,7 @@ Future<dynamic> confirmDelete({
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        content: Text('Delete $title?'),
+        content: Text('Delete $title?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
@@ -392,7 +392,7 @@ Future<dynamic> confirmDeparture({
       void onDeny() => Navigator.of(context).pop();
 
       return EzAlertDialog(
-        content: Text('Leave $title?'),
+        content: Text('Leave $title?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,

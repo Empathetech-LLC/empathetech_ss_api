@@ -104,7 +104,7 @@ Future<dynamic> logout(BuildContext context) {
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        content: const Text('Logout?'),
+        content: const Text('Logout?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
@@ -206,6 +206,7 @@ Future<dynamic> editAvatar(BuildContext context) {
           const Text(
             'Images are expensive to store!\nPaste an image link and that will be used',
             maxLines: 2,
+            textAlign: TextAlign.center,
           ),
         ],
         materialActions: ezMaterialActions(
@@ -280,7 +281,7 @@ Future<dynamic> editName(BuildContext context) {
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        title: const Text('Who are you?'),
+        title: const Text('Who are you?', textAlign: TextAlign.center),
         content: TextFormField(
           key: nameFormKey,
           controller: nameController,
