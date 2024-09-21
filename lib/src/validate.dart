@@ -19,7 +19,7 @@ final RegExp validatorRegex = RegExp(r'^[\w\d\s,:.?!_^-]{3,20}$');
 /// Validate emails via [EmailValidator]
 String? emailValidator(String? toCheck) {
   return (toCheck != null && !EmailValidator.validate(toCheck))
-      ? 'Email does not exist'
+      ? 'Invalid email'
       : null;
 }
 
