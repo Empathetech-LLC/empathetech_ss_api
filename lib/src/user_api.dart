@@ -154,7 +154,6 @@ Future<String> getAvatar() async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new URL on success
 Future<dynamic> editAvatar(BuildContext context) {
-  final GlobalKey<FormState> urlFormKey = GlobalKey<FormState>();
   final TextEditingController urlController = TextEditingController();
 
   return showPlatformDialog(
@@ -163,26 +162,25 @@ Future<dynamic> editAvatar(BuildContext context) {
       void onConfirm() async {
         closeKeyboard(dialogContext);
 
+        final String url = urlController.text.trim();
+
         // Don't do anything if the url is invalid
-        if (!urlFormKey.currentState!.validate()) {
+        if (urlValidator(url) != null) {
           logAlert(context, message: 'Invalid URL!');
           return;
         }
 
-        // Update firestore and the firebase user config
-        final String photoURL = urlController.text.trim();
-
         try {
-          await AppUser.account.updatePhotoURL(photoURL);
+          await AppUser.account.updatePhotoURL(url);
           await AppUser.db
               .collection(usersPath)
               .doc(AppUser.account.uid)
               .update(
-            <String, dynamic>{avatarURLPath: photoURL},
+            <String, dynamic>{avatarURLPath: url},
           );
 
           if (dialogContext.mounted) {
-            Navigator.of(dialogContext).pop(photoURL);
+            Navigator.of(dialogContext).pop(url);
           }
         } catch (e) {
           if (context.mounted) logAlert(context, message: e.toString());
@@ -194,11 +192,12 @@ Future<dynamic> editAvatar(BuildContext context) {
       return EzAlertDialog(
         contents: <Widget>[
           TextFormField(
-            key: urlFormKey,
             controller: urlController,
+            maxLines: 1,
+            autofillHints: const <String>[AutofillHints.url],
             decoration: const InputDecoration(hintText: 'Enter URL'),
             validator: urlValidator,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+            autovalidateMode: AutovalidateMode.onUnfocus,
           ),
           const EzSpacer(),
 
@@ -245,7 +244,6 @@ Future<String> getName() async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new name on success
 Future<dynamic> editName(BuildContext context) {
-  final GlobalKey<FormState> nameFormKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
 
   return showPlatformDialog(
@@ -254,25 +252,24 @@ Future<dynamic> editName(BuildContext context) {
       void onConfirm() async {
         closeKeyboard(dialogContext);
 
+        final String name = nameController.text.trim();
+
         // Don't do anything if the display name is invalid
-        if (!nameFormKey.currentState!.validate()) {
+        if (displayNameValidator(name) != null) {
           logAlert(context, message: 'Invalid display name!');
           return;
         }
 
-        // Update firestore and the firebase user config
-        final String newName = nameController.text.trim();
-
         try {
-          await AppUser.account.updateDisplayName(newName);
+          await AppUser.account.updateDisplayName(name);
           await AppUser.db
               .collection(usersPath)
               .doc(AppUser.account.uid)
               .update(
-            <String, dynamic>{displayNamePath: newName},
+            <String, dynamic>{displayNamePath: name},
           );
 
-          if (dialogContext.mounted) Navigator.of(dialogContext).pop(newName);
+          if (dialogContext.mounted) Navigator.of(dialogContext).pop(name);
         } catch (e) {
           if (context.mounted) logAlert(context, message: e.toString());
         }
@@ -283,11 +280,12 @@ Future<dynamic> editName(BuildContext context) {
       return EzAlertDialog(
         title: const Text('Who are you?', textAlign: TextAlign.center),
         content: TextFormField(
-          key: nameFormKey,
           controller: nameController,
+          maxLines: 1,
+          autofillHints: const <String>[AutofillHints.newUsername],
           decoration: const InputDecoration(hintText: 'Enter display name'),
           validator: displayNameValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.onUnfocus,
         ),
         materialActions: ezMaterialActions(
           context: context,

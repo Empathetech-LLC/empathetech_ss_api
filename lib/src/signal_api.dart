@@ -162,22 +162,24 @@ Future<void> resetSignal(BuildContext context, String title) async {
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new message [String] on success
 Future<dynamic> updateMessage(BuildContext context, String title) {
-  final GlobalKey<FormState> messageFormKey = GlobalKey<FormState>();
   final TextEditingController messageController = TextEditingController();
 
   return showPlatformDialog(
     context: context,
     builder: (BuildContext dialogContext) {
       void onConfirm() async {
+        closeKeyboard(dialogContext);
+
+        final String message = messageController.text.trim();
+
         // Don't do anything if the message is invalid
-        if (!messageFormKey.currentState!.validate()) {
+        if (signalMessageValidator(message) != null) {
           logAlert(context, message: 'Invalid message!');
           return;
         }
 
         try {
           // Upload the new message
-          final String message = messageController.text.trim();
           await AppUser.db.collection(signalsPath).doc(title).update(
             <String, dynamic>{messagePath: message},
           );
@@ -194,11 +196,11 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
       return EzAlertDialog(
         title: const Text('New message...', textAlign: TextAlign.center),
         content: TextFormField(
-          key: messageFormKey,
           controller: messageController,
+          maxLines: 1,
           decoration: const InputDecoration(hintText: 'Notification'),
           validator: signalMessageValidator,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.onUnfocus,
         ),
         materialActions: ezMaterialActions(
           context: context,
