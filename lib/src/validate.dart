@@ -10,8 +10,7 @@ const String inputRules =
 
 Letters, numbers, spaces, and the following special characters are allowed...
 
-, : . ? ! _ ^ -
-''';
+, : . ? ! _ ^ -''';
 
 /// r'^[\d\w\s-_!,?^]{3,20}$'
 final RegExp validatorRegex = RegExp(r'^[\w\d\s,:.?!_^-]{3,20}$');
