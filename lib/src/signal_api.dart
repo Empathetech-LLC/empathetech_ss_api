@@ -285,7 +285,8 @@ Future<dynamic> confirmTransfer({
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceEvenly, // TODO: Are you sure about that?
                         children: <Widget>[
                           // Profile image/avatar
                           CircleAvatar(
