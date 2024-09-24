@@ -151,9 +151,10 @@ Future<String> getAvatar() async {
 /// Update the users avatar
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new URL on success
-Future<dynamic> editAvatar(BuildContext context) {
-  final TextEditingController urlController = TextEditingController();
-
+Future<dynamic> editAvatar({
+  required BuildContext context,
+  required TextEditingController urlController,
+}) {
   return showPlatformDialog(
     context: context,
     builder: (BuildContext dialogContext) {
@@ -177,9 +178,7 @@ Future<dynamic> editAvatar(BuildContext context) {
             <String, dynamic>{avatarURLPath: url},
           );
 
-          if (dialogContext.mounted) {
-            Navigator.of(dialogContext).pop(url);
-          }
+          if (dialogContext.mounted) Navigator.of(dialogContext).pop(url);
         } catch (e) {
           if (context.mounted) await logAlert(context, message: e.toString());
         }
@@ -217,7 +216,7 @@ Future<dynamic> editAvatar(BuildContext context) {
         needsClose: false,
       );
     },
-  ).then((_) => urlController.dispose());
+  );
 }
 
 /// Gets the users display name
@@ -234,9 +233,10 @@ Future<String> getName() async {
 /// Update the users display name
 /// This can cost money! [https://firebase.google.com/pricing/]
 /// Returns the new name on success
-Future<dynamic> editName(BuildContext context) {
-  final TextEditingController nameController = TextEditingController();
-
+Future<dynamic> editName({
+  required BuildContext context,
+  required TextEditingController nameController,
+}) {
   return showPlatformDialog(
     context: context,
     builder: (BuildContext dialogContext) {
@@ -269,7 +269,7 @@ Future<dynamic> editName(BuildContext context) {
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        title: const Text('Who are you?', textAlign: TextAlign.center),
+        title: const Text('I am...', textAlign: TextAlign.center),
         content: TextFormField(
           controller: nameController,
           maxLines: 1,
@@ -296,5 +296,5 @@ Future<dynamic> editName(BuildContext context) {
         needsClose: false,
       );
     },
-  ).then((_) => nameController.dispose());
+  );
 }
