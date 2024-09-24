@@ -19,7 +19,7 @@ class AppUser {
 
 /// Attempt creating a new firebase user account
 /// This can cost money! [https://firebase.google.com/pricing/]
-Future<void> attemptAccountCreation(
+Future<void> attemptSignUp(
     BuildContext context, String email, String password) async {
   try {
     await AppUser.auth.createUserWithEmailAndPassword(
