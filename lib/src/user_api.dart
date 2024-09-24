@@ -26,9 +26,6 @@ Future<void> attemptAccountCreation(
       email: email,
       password: password,
     );
-
-    // Successful login, return to the home screen
-    if (context.mounted) Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
@@ -64,9 +61,6 @@ Future<void> attemptLogin(
       email: email,
       password: password,
     );
-
-    // Successful login, return to the home screen
-    if (context.mounted) Navigator.of(context).pop(true);
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'user-not-found':
