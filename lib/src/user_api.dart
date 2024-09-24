@@ -29,12 +29,14 @@ Future<void> attemptAccountCreation(
   } on FirebaseAuthException catch (e) {
     switch (e.code) {
       case 'email-already-in-use':
-        if (context.mounted) logAlert(context, message: 'Email already in use');
+        if (context.mounted) {
+          await logAlert(context, message: 'Email already in use');
+        }
         break;
 
       case 'weak-password':
         if (context.mounted) {
-          logAlert(
+          await logAlert(
             context,
             message: 'The provided password is too weak',
           );
@@ -43,12 +45,12 @@ Future<void> attemptAccountCreation(
 
       default:
         final String message = 'Firebase error on user creation\n${e.code}';
-        logAlert(context, message: message);
+        await logAlert(context, message: message);
         break;
     }
   } catch (e) {
     final String message = 'Error creating user\n${e.toString()}';
-    if (context.mounted) logAlert(context, message: message);
+    if (context.mounted) await logAlert(context, message: message);
   }
 }
 
@@ -65,18 +67,20 @@ Future<void> attemptLogin(
     switch (e.code) {
       case 'user-not-found':
         if (context.mounted) {
-          logAlert(context, message: 'No user found for that email!');
+          await logAlert(context, message: 'No user found for that email!');
         }
         break;
 
       case 'wrong-password':
-        if (context.mounted) logAlert(context, message: 'Incorrect password');
+        if (context.mounted) {
+          await logAlert(context, message: 'Incorrect password');
+        }
 
         break;
 
       default:
         final String message = 'Error logging in\n${e.code}';
-        logAlert(context, message: message);
+        await logAlert(context, message: message);
         break;
     }
   }
@@ -160,7 +164,7 @@ Future<dynamic> editAvatar(BuildContext context) {
 
         // Don't do anything if the url is invalid
         if (urlValidator(url) != null) {
-          logAlert(context, message: 'Invalid URL!');
+          await logAlert(context, message: 'Invalid URL!');
           return;
         }
 
@@ -177,31 +181,24 @@ Future<dynamic> editAvatar(BuildContext context) {
             Navigator.of(dialogContext).pop(url);
           }
         } catch (e) {
-          if (context.mounted) logAlert(context, message: e.toString());
+          if (context.mounted) await logAlert(context, message: e.toString());
         }
       }
 
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        contents: <Widget>[
-          TextFormField(
-            controller: urlController,
-            maxLines: 1,
-            autofillHints: const <String>[AutofillHints.url],
-            decoration: const InputDecoration(hintText: 'Enter URL'),
-            validator: urlValidator,
-            autovalidateMode: AutovalidateMode.onUnfocus,
+        title: const Text('Enter URL'),
+        content: TextFormField(
+          controller: urlController,
+          maxLines: 1,
+          autofillHints: const <String>[AutofillHints.url],
+          decoration: const InputDecoration(
+            hintText: 'https://example.com/image.png',
           ),
-          const EzSpacer(),
-
-          // Explanation for not using image files
-          const Text(
-            'Images are expensive to store!\nPaste an image link and that will be used',
-            maxLines: 2,
-            textAlign: TextAlign.center,
-          ),
-        ],
+          validator: urlValidator,
+          autovalidateMode: AutovalidateMode.onUnfocus,
+        ),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
@@ -250,7 +247,7 @@ Future<dynamic> editName(BuildContext context) {
 
         // Don't do anything if the display name is invalid
         if (displayNameValidator(name) != null) {
-          logAlert(context, message: 'Invalid display name!');
+          await logAlert(context, message: 'Invalid display name!');
           return;
         }
 
@@ -265,7 +262,7 @@ Future<dynamic> editName(BuildContext context) {
 
           if (dialogContext.mounted) Navigator.of(dialogContext).pop(name);
         } catch (e) {
-          if (context.mounted) logAlert(context, message: e.toString());
+          if (context.mounted) await logAlert(context, message: e.toString());
         }
       }
 

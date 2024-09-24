@@ -39,7 +39,8 @@ Future<bool> addToDB({
         await AppUser.db.collection(signalsPath).doc(title).get();
 
     if (check.exists) {
-      if (context.mounted) logAlert(context, message: 'That name is taken!');
+      if (context.mounted)
+        await logAlert(context, message: 'That name is taken!');
       return false;
     }
 
@@ -57,7 +58,7 @@ Future<bool> addToDB({
 
     return true;
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
     return false;
   }
 }
@@ -93,7 +94,7 @@ Future<void> toggleParticipation({
       );
     }
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
   }
 }
 
@@ -111,7 +112,7 @@ Future<void> requestMembers({
       },
     );
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
   }
 }
 
@@ -127,7 +128,7 @@ Future<void> acceptInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
   }
 }
 
@@ -142,7 +143,7 @@ Future<void> declineInvite(BuildContext context, String title) async {
       },
     );
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
   }
 }
 
@@ -154,7 +155,7 @@ Future<void> resetSignal(BuildContext context, String title) async {
       <String, dynamic>{activeMembersPath: <String>[]},
     );
   } catch (e) {
-    if (context.mounted) logAlert(context, message: e.toString());
+    if (context.mounted) await logAlert(context, message: e.toString());
   }
 }
 
@@ -174,7 +175,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
         // Don't do anything if the message is invalid
         if (signalMessageValidator(message) != null) {
-          logAlert(context, message: 'Invalid message!');
+          await logAlert(context, message: 'Invalid message!');
           return;
         }
 
@@ -186,7 +187,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
 
           if (dialogContext.mounted) Navigator.of(dialogContext).pop(message);
         } catch (e) {
-          if (context.mounted) logAlert(context, message: e.toString());
+          if (context.mounted) await logAlert(context, message: e.toString());
           return;
         }
       }
@@ -279,7 +280,7 @@ Future<dynamic> confirmTransfer({
                           }
                         } catch (e) {
                           if (context.mounted) {
-                            logAlert(context, message: e.toString());
+                            await logAlert(context, message: e.toString());
                           }
                         }
                       },
@@ -338,7 +339,7 @@ Future<dynamic> confirmDelete({
           // Delete the signal from the db
           await AppUser.db.collection(signalsPath).doc(title).delete();
         } catch (e) {
-          if (context.mounted) logAlert(context, message: e.toString());
+          if (context.mounted) await logAlert(context, message: e.toString());
         }
       }
 
@@ -388,7 +389,7 @@ Future<dynamic> confirmDeparture({
             },
           );
         } catch (e) {
-          if (context.mounted) logAlert(context, message: e.toString());
+          if (context.mounted) await logAlert(context, message: e.toString());
         }
       }
 
