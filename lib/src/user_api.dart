@@ -98,7 +98,7 @@ Future<dynamic> logout(BuildContext context) {
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        content: const Text('Logout?', textAlign: TextAlign.center),
+        title: const Text('Logout?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,

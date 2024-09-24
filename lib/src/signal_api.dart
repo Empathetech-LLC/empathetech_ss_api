@@ -344,7 +344,7 @@ Future<dynamic> confirmDelete({
       void onDeny() => Navigator.of(dialogContext).pop();
 
       return EzAlertDialog(
-        content: Text('Delete $title?', textAlign: TextAlign.center),
+        title: Text('Delete $title?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
@@ -394,7 +394,7 @@ Future<dynamic> confirmDeparture({
       void onDeny() => Navigator.of(context).pop();
 
       return EzAlertDialog(
-        content: Text('Leave $title?', textAlign: TextAlign.center),
+        title: Text('Leave $title?', textAlign: TextAlign.center),
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,

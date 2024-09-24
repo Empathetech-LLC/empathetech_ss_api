@@ -54,7 +54,7 @@ Widget noUserCoin(BuildContext context) {
     onLongPress: () => showPlatformDialog(
       context: context,
       builder: (_) => EzAlertDialog(
-        content: const Text('Nobody!', textAlign: TextAlign.center),
+        title: const Text('Nobody!', textAlign: TextAlign.center),
       ),
     ),
     child: Container(
