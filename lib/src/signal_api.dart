@@ -39,8 +39,9 @@ Future<bool> addToDB({
         await AppUser.db.collection(signalsPath).doc(title).get();
 
     if (check.exists) {
-      if (context.mounted)
+      if (context.mounted) {
         await logAlert(context, message: 'That name is taken!');
+      }
       return false;
     }
 
