@@ -74,9 +74,6 @@ Widget showUserPics(BuildContext context, List<UserProfile> profiles) {
 
   return EzScrollView(
     scrollDirection: Axis.horizontal,
-    mainAxisSize: MainAxisSize.max,
-    mainAxisAlignment:
-        MainAxisAlignment.spaceEvenly, // ToDo: Are you sure about that?
     children: profiles
         .map(
           (UserProfile profile) => GestureDetector(
@@ -107,9 +104,6 @@ Widget showUserProfiles(BuildContext context, List<UserProfile> profiles) {
     children: profiles
         .map(
           (UserProfile profile) => Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment:
-                MainAxisAlignment.spaceEvenly, // ToDo: Are you sure about that?
             children: <Widget>[
               // Profile image/avatar
               CircleAvatar(
@@ -145,8 +139,6 @@ Widget addProfilesWindow({
       borderRadius: ezRoundEdge,
     ),
     child: Column(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceEvenly, // ToDo: Are you sure about that?
       children: <Widget>[
         Text(title, style: theme.textTheme.titleLarge),
         EzScrollView(children: items),
