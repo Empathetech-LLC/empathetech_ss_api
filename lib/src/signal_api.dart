@@ -208,6 +208,7 @@ Future<dynamic> updateMessage(BuildContext context, String title) {
           context: context,
           confirmMsg: 'Update',
           onConfirm: onConfirm,
+          confirmIsDestructive: true,
           onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(
@@ -348,6 +349,7 @@ Future<dynamic> confirmDelete({
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
+          confirmIsDestructive: true,
           onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(
@@ -398,6 +400,7 @@ Future<dynamic> confirmDeparture({
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
+          confirmIsDestructive: true,
           onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(

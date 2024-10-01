@@ -106,6 +106,7 @@ Future<dynamic> logout(BuildContext context) {
         materialActions: ezMaterialActions(
           context: context,
           onConfirm: onConfirm,
+          confirmIsDestructive: true,
           onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(
@@ -198,18 +199,19 @@ Future<dynamic> editAvatar({
         ),
         materialActions: ezMaterialActions(
           context: context,
-          onConfirm: onConfirm,
           confirmMsg: 'Submit',
-          onDeny: onDeny,
+          onConfirm: onConfirm,
+          confirmIsDestructive: true,
           denyMsg: 'Cancel',
+          onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(
           context: context,
-          onConfirm: onConfirm,
           confirmMsg: 'Submit',
+          onConfirm: onConfirm,
           confirmIsDestructive: true,
-          onDeny: onDeny,
           denyMsg: 'Cancel',
+          onDeny: onDeny,
         ),
         needsClose: false,
       );
@@ -278,18 +280,19 @@ Future<dynamic> editName({
         ),
         materialActions: ezMaterialActions(
           context: context,
-          onConfirm: onConfirm,
           confirmMsg: 'Submit',
-          onDeny: onDeny,
+          onConfirm: onConfirm,
+          confirmIsDestructive: true,
           denyMsg: 'Cancel',
+          onDeny: onDeny,
         ),
         cupertinoActions: ezCupertinoActions(
           context: context,
-          onConfirm: onConfirm,
           confirmMsg: 'Submit',
+          onConfirm: onConfirm,
           confirmIsDestructive: true,
-          onDeny: onDeny,
           denyMsg: 'Cancel',
+          onDeny: onDeny,
         ),
         needsClose: false,
       );
