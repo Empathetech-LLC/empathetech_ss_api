@@ -192,9 +192,7 @@ Future<dynamic> editAvatar({
           controller: urlController,
           maxLines: 1,
           autofillHints: const <String>[AutofillHints.url],
-          decoration: const InputDecoration(
-            hintText: 'https://example.com/image.png',
-          ),
+          decoration: const InputDecoration(hintText: webImgHint),
           validator: urlValidator,
           autovalidateMode: AutovalidateMode.onUnfocus,
         ),
