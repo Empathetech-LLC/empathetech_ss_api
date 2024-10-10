@@ -19,8 +19,7 @@ dependencies:
   email_validator: ^3.0.0
   flutter_platform_widgets: ^7.0.1
 
-  empathetech_flutter_ui:
-    path: ../empathetech_flutter_ui
+  empathetech_flutter_ui: ^7.2.1
 
 dev_dependencies:
   dartdoc: ^8.1.0
